@@ -1,10 +1,13 @@
 # Stata MCP — Stata × Claude · ChatGPT
 
-> English: [README.en.md](README.en.md)
+> **English summary** — Stata MCP is an **AI assistant for Stata**: an MCP (Model Context Protocol) server that connects **Stata** with **Claude** and **ChatGPT**.
+> Ask for an analysis in chat and it runs in your own Stata on the same data — regressions, data management, graphs, do-files; send results you ran yourself back to the AI to interpret and continue.
+> You keep using Stata as usual and bring in the AI only when you need it. Requires Stata 17+ (19 recommended) and Claude Desktop.
+> Full English docs: [README.en.md](README.en.md) · [USAGE.en.md](USAGE.en.md) · [Demo videos](https://www.youtube.com/@Stata-MCP)
 
 Stata MCP는 Claude·ChatGPT가 **Stata(결과 창·데이터 브라우저·그래프 등)에서 같은 데이터로 함께 작업**하게 해 주는 도구입니다. **분석 명령과 결과를 서로 주고받는** 방식으로, 대화로 분석을 요청하면 내 Stata에서 바로 실행되고, Stata에서 직접 돌린 결과도 AI에 보내 해석과 다음 작업을 이어 갈 수 있습니다. 연결된 상태에서도 Stata는 평소처럼 직접 사용할 수 있고, 필요할 때만 AI의 도움을 받으면 됩니다.
 
-[![Stata MCP — Stata 와 Claude 가 같은 데이터로 함께 작업하는 화면](images/hero.png)](https://www.youtube.com/@Stata-MCP)
+[![Stata MCP — AI assistant for Stata: Stata 와 Claude 가 같은 데이터로 함께 작업하는 화면 (Claude and Stata working on the same data)](images/hero.png)](https://www.youtube.com/@Stata-MCP)
 
 ▶ [데모 영상 보기 (YouTube 채널)](https://www.youtube.com/@Stata-MCP)
 
@@ -174,3 +177,5 @@ Claude 대신 ChatGPT 데스크톱 앱에서도 같은 Stata 에 연결할 수 �
 Copyright (c) 2026 [JasonTG, Inc.](https://www.jat.co.kr/) and mhjung0822
 
 개인 및 비영리 기관의 비상업적 연구·교육 목적으로 무료로 제공됩니다. 그 밖의 사용과 허가 없는 재배포·수정·판매는 금지됩니다. 소프트웨어는 "있는 그대로" 제공되며, 사용 및 분석 결과에 대해 어떠한 보증이나 책임도 지지 않습니다. 이용 조건은 새 버전에서 변경될 수 있습니다. 전문은 [LICENSE](LICENSE) 참고.
+
+Stata는 StataCorp LLC의 등록상표입니다. 이 프로젝트는 독립적으로 개발된 도구로, StataCorp LLC와 제휴·보증 관계가 없습니다.

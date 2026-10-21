@@ -4,7 +4,7 @@
 
 Stata MCP lets Claude and ChatGPT **work with you in Stata (Results window, Data Browser, graphs, and so on), on the same data**. You **exchange analysis commands and results** back and forth: ask for an analysis in chat and it runs right in your Stata, or send results you ran yourself in Stata to the AI to interpret and carry on from there. While connected, you can still use Stata on your own as usual and bring in the AI only when you need it.
 
-[![Stata MCP — Stata and Claude working on the same data](images/hero.png)](https://www.youtube.com/@Stata-MCP)
+[![Stata MCP — AI assistant for Stata: Claude and Stata working on the same data](images/hero.png)](https://www.youtube.com/@Stata-MCP)
 
 ▶ [Watch the demos (YouTube channel)](https://www.youtube.com/@Stata-MCP)
 
@@ -176,3 +176,5 @@ Instead of Claude, you can connect the ChatGPT desktop app to the same Stata. No
 Copyright (c) 2026 [JasonTG, Inc.](https://www.jat.co.kr/) and mhjung0822
 
 Free for personal use and for non-commercial research and education, including non-profit institutions. Any other use, and redistribution, modification or resale without permission, is not permitted. The software is provided "as is", with no warranty or liability for its use or for any results of analyses. Terms may change in a new version. See [LICENSE](LICENSE) for the full text.
+
+Stata is a registered trademark of StataCorp LLC. This project is an independently developed tool and is not affiliated with or endorsed by StataCorp LLC.
