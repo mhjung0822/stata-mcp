@@ -123,18 +123,22 @@ or **⌘Q** on Mac. Then start them in this order:
 2. Start Claude Desktop
 ```
 
-Then, in a new chat (or cowork session):
+Then, in a cowork session (or the Claude Code tab), type either of these:
 
 ```
 What Stata version am I running?
 ```
 
-If the version and edition come back (e.g. StataNow/MP 19.5), the installation is complete.
+```
+/stata-setup
+```
+
+If the version and edition come back (e.g. StataNow/MP 19.5), the installation is complete. `/stata-setup` also checks the environment and working folder in one go (in the Claude Code tab: `/stata-mcp:stata-setup`).
 
 If not, check in order:
 
 1. Stata Results window — does the `mcp_connect` output say `Ready for commands`? (if not, see step 3, Start the server)
-2. Claude tools list — is the Stata MCP extension visible? (if not, fully quit and relaunch Claude Desktop)
+2. Settings → Plugins — is **Stata MCP** switched on? (for chat: Settings → Extensions). If it is on but nothing works, fully quit and relaunch Claude Desktop
 
 For everyday usage see [USAGE.en.md](USAGE.en.md) — startup order, control panel, push notifications, help lookup, troubleshooting. Rare environment issues: [TROUBLESHOOTING.md](TROUBLESHOOTING.md) (Korean).
 

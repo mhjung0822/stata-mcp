@@ -126,18 +126,22 @@ Mac 은 **⌘Q** 로 종료하세요. 이후 순서대로:
 2. Claude Desktop 실행
 ```
 
-이후 새 대화(또는 코워크 세션)에서:
+이후 코워크 세션(또는 Claude Code 탭)에서 둘 중 하나를 입력합니다:
 
 ```
 Stata 버전 알려줘
 ```
 
-버전·에디션(예: StataNow/MP 19.5)이 답으로 오면 설치 완료입니다.
+```
+/stata-setup
+```
+
+버전·에디션(예: StataNow/MP 19.5)이 답으로 오면 설치 완료입니다. `/stata-setup` 은 환경·작업 폴더 확인까지 한 번에 합니다 (Claude Code 탭에서는 `/stata-mcp:stata-setup`).
 
 안 되면 순서대로 확인하세요:
 
 1. Stata 결과창 — `mcp_connect` 출력에 `Ready for commands` 가 있는지 (없으면 3장 서버 기동)
-2. Claude 도구 목록 — Stata MCP 확장이 보이는지 (안 보이면 Claude Desktop 완전 종료 후 재실행)
+2. 설정 → 플러그인 — **Stata MCP** 가 켜져 있는지 (채팅은 설정 → 확장 프로그램). 켜져 있는데 안 되면 Claude Desktop 완전 종료 후 재실행
 
 사용법 전반은 [USAGE.md](USAGE.md) 참고 — 시작 순서, 제어판, push 알림, 도움말 조회, 문제 해결. 드문 환경 이슈는 [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
 
