@@ -3,7 +3,7 @@
 > **이 문서는 Claude Code(에이전트)가 읽고 그대로 수행하는 문서입니다.**
 > 사람이 읽는 설치 가이드는 [README.md](README.md) 입니다.
 >
-> **먼저 확인**: 확장 프로그램(mcpb, README.md 4-1)을 설치할 수 있는 환경이면
+> **먼저 확인**: 플러그인(README.md 4-1) 이나 확장 프로그램(mcpb, CHAT.md)을 설치할 수 있는 환경이면
 > 그쪽이 더 간단합니다 (Node 불필요) — 이 절차는 확장이 안 되는 환경의
 > 설정 파일 수동 등록을 대행하는 것입니다.
 
@@ -132,7 +132,7 @@ curl http://127.0.0.1:8080/status
 ## 6) 스킬 (선택)
 
 슬래시 명령 스킬은 config 로 안 되고 **zip 업로드**뿐입니다. 필요하면 안내:
-[`stata-skills-all.zip`](https://raw.githubusercontent.com/mhjung0822/stata_mcp-releases/main/claude-plugins/stata-skills-all.zip) → Claude Desktop **설정 → 스킬 → 업로드** (한 번 올리면 같은 계정 모든 기기에 적용)
+[`stata-skills-all.zip`](https://raw.githubusercontent.com/mhjung0822/stata_mcp-releases/main/claude-plugins/chat/stata-skills-all.zip) → Claude Desktop **설정 → 스킬 → 업로드** (한 번 올리면 같은 계정 모든 기기에 적용)
 (스킬은 StataMCP 도구를 호출하므로 위 3)의 config 등록이 되어 있어야 동작합니다)
 
 ---

@@ -68,44 +68,47 @@ Starts the MCP server and the drone in one go. On first run it offers the help-D
 
 ---
 
-## 4. Register in Claude (cowork)
+## 4. Register in Claude (cowork · Claude Code)
 
 > For environment issues such as cowork not activating on Windows, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md) (Korean).
 
-### 4-1. Install the extension (MCP connection)
+### 4-1. Install the plugin (MCP connection + slash commands)
 
-1. Download the **one** file matching your OS:
-   - Mac: [`stata-mcp-mac.mcpb`](https://raw.githubusercontent.com/mhjung0822/stata_mcp-releases/main/claude-plugins/stata-mcp-mac.mcpb)
-   - Windows: [`stata-mcp-win.mcpb`](https://raw.githubusercontent.com/mhjung0822/stata_mcp-releases/main/claude-plugins/stata-mcp-win.mcpb)
-     - If it will not install, or the tools do not appear, install [`stata-mcp-win-java.mcpb`](https://raw.githubusercontent.com/mhjung0822/stata_mcp-releases/main/claude-plugins/stata-mcp-win-java.mcpb) instead. Do not install both at the same time.
-2. In Claude Desktop, click your **name** at the bottom left → **Settings** → open **Desktop app → Extensions** in the left list.
+One file for both Mac and Windows. It works in cowork and in the Claude Code tab.
 
-   <img src="images/claude-ext-1.png" alt="Claude Settings - Extensions" width="640">
+1. [Download `stata-mcp.plugin`](https://raw.githubusercontent.com/mhjung0822/stata_mcp-releases/main/claude-plugins/stata-mcp.plugin)
 
-3. **Drag** the downloaded `.mcpb` file onto this screen. If drag-and-drop does not work, click **Advanced settings** at the bottom → **Install Extension**, select the downloaded file, and confirm (on Mac the button may read **Preview**).
+   <img src="images/claude-plugin-1.png" alt="stata-mcp.plugin in the Downloads folder" width="640">
 
-   <img src="images/claude-ext-2.png" alt="Advanced settings - Install Extension button" width="640">
+2. In Claude Desktop, click your **name** at the bottom left → **Settings** → **Customize → Plugins** in the left list
 
-   <img src="images/claude-ext-3.png" alt="Select the downloaded .mcpb file" width="640">
+   <img src="images/claude-plugin-2.png" alt="Settings - Plugins" width="640">
 
-4. In the confirmation dialog, check that the name is **Stata MCP (Mac)** (Windows: **Stata MCP (Windows)**) and click **Install** at the top right.
+3. Click **+ Add** at the top right → **Upload plugin**
 
-   <img src="images/claude-ext-4.png" alt="Install confirmation dialog" width="640">
+   <img src="images/claude-plugin-3.png" alt="Add menu - Upload plugin" width="640">
 
-5. Restart Claude Desktop
+4. **Drag** the downloaded file onto this screen, or pick it with Browse
 
-> Screenshots are from the Korean UI on Mac; button positions are the same. The server from step 3 (`mcp_connect`) must be running for the tools to work. To update, install the new `.mcpb` file the same way.
+   <img src="images/claude-plugin-4.png" alt="Upload plugin screen" width="640">
 
-### 4-2. Register the skills (slash commands)
+5. When the preview shows **stata-mcp**, click **Upload**
 
-1. [Download `stata-skills-all-en.zip`](https://raw.githubusercontent.com/mhjung0822/stata_mcp-releases/main/claude-plugins/stata-skills-all-en.zip) (individual skills: `claude-plugins/skill-zips-en/`)
-2. **Unzip it** — you get 11 per-skill zips
-3. Claude Desktop → **Settings → Skills** → Upload → upload the extracted **per-skill zips** (do not upload the bundle zip itself)
-4. Upload once and it applies automatically to every device on the same account
+   <img src="images/claude-plugin-5.png" alt="File selected - preview and Upload button" width="640">
 
-> A Korean edition also exists (`stata-skills-all.zip`). The skills share names across the two packs, so install only one language pack per account.
+6. In the "This plugin includes a local MCP server" dialog, click **Continue**
 
-For the skill lineup and usage, see [USAGE.en.md](USAGE.en.md).
+   <img src="images/claude-plugin-6.png" alt="Local MCP server notice" width="640">
+
+7. Done when the **Stata MCP** page shows **Skills · 12** and **Connectors · 1** with the switch at the top right turned on
+
+   <img src="images/claude-plugin-7.png" alt="Installed - Stata MCP plugin page" width="640">
+
+> Screenshots are from the Korean UI; button positions are the same. The server from step 3 (`mcp_connect`) must be running for the tools to work. To update, upload the new `.plugin` file the same way. Slash commands carry the `stata-mcp:` prefix (e.g. `/stata-mcp:stata-exec`) — see [USAGE.en.md](USAGE.en.md) for the list. The plugin ships the Korean skill texts; the English skill pack is in [CHAT.en.md](CHAT.en.md).
+
+### 4-2. Also use it in chat (optional)
+
+The chat surface uses the extension and the skill zip instead of the plugin — see [CHAT.en.md](CHAT.en.md). Skip this if you only use cowork or Claude Code.
 
 ---
 
