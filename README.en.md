@@ -29,7 +29,7 @@ For usage and troubleshooting after install see [USAGE.en.md](USAGE.en.md).
 One line in Stata:
 
 ```stata
-net install stata-mcp, from("https://raw.githubusercontent.com/mhjung0822/stata_mcp-releases/main/release") replace
+net install stata-mcp, from("https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/release") replace
 ```
 
 This downloads the two jars plus the ado/dlg files. That is the whole install — the help DB (~32MB) is offered by `mcp_connect` (next section) on first connect (answer y; internet connection required).
@@ -76,7 +76,7 @@ Starts the MCP server and the drone in one go. On first run it offers the help-D
 
 One file for both Mac and Windows. It works in cowork and in the Claude Code tab.
 
-1. [Download `stata-mcp.plugin`](https://raw.githubusercontent.com/mhjung0822/stata_mcp-releases/main/claude-plugins/stata-mcp.plugin)
+1. [Download `stata-mcp.plugin`](https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/claude-plugins/stata-mcp.plugin)
 
    <img src="images/claude-plugin-1.png" alt="stata-mcp.plugin in the Downloads folder" width="640">
 

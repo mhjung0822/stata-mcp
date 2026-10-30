@@ -46,7 +46,7 @@ java -version  # 17+ 필요
 **당신은 Stata 를 직접 못 조작합니다.** 아래를 제시하고 사용자가 Stata 명령창에 붙여넣게 하세요:
 
 ```stata
-net install stata-mcp, from("https://raw.githubusercontent.com/mhjung0822/stata_mcp-releases/main/release") replace
+net install stata-mcp, from("https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/release") replace
 mcp_setup
 mcp_connect
 ```
@@ -132,7 +132,7 @@ curl http://127.0.0.1:8080/status
 ## 6) 스킬 (선택)
 
 슬래시 명령 스킬은 config 로 안 되고 **zip 업로드**뿐입니다. 필요하면 안내:
-[`stata-skills-all.zip`](https://raw.githubusercontent.com/mhjung0822/stata_mcp-releases/main/claude-plugins/chat/stata-skills-all.zip) → Claude Desktop **설정 → 스킬 → 업로드** (한 번 올리면 같은 계정 모든 기기에 적용)
+[`stata-skills-all.zip`](https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/claude-plugins/chat/stata-skills-all.zip) → Claude Desktop **설정 → 스킬 → 업로드** (한 번 올리면 같은 계정 모든 기기에 적용)
 (스킬은 StataMCP 도구를 호출하므로 위 3)의 config 등록이 되어 있어야 동작합니다)
 
 ---

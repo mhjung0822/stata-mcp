@@ -41,7 +41,7 @@ Claude Desktop 의 설정 파일(`claude_desktop_config.json`)에 직접 등록�
 있습니다. **Claude Code 를 열고 아래를 붙여넣으면** 등록을 대신 처리해 줍니다:
 
 ```
-https://raw.githubusercontent.com/mhjung0822/stata_mcp-releases/main/AGENT_INSTALL.md
+https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/AGENT_INSTALL.md
 이 문서 읽고 Stata MCP 설치해줘.
 ```
 

@@ -5,8 +5,8 @@ The **chat** surface of Claude Desktop does not use plugins. To use the Stata to
 ## 1. Install the extension (MCP connection)
 
 1. Download the **one** file matching your OS:
-   - Mac: [`stata-mcp-mac.mcpb`](https://raw.githubusercontent.com/mhjung0822/stata_mcp-releases/main/claude-plugins/chat/stata-mcp-mac.mcpb)
-   - Windows: [`stata-mcp-win.mcpb`](https://raw.githubusercontent.com/mhjung0822/stata_mcp-releases/main/claude-plugins/chat/stata-mcp-win.mcpb)
+   - Mac: [`stata-mcp-mac.mcpb`](https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/claude-plugins/chat/stata-mcp-mac.mcpb)
+   - Windows: [`stata-mcp-win.mcpb`](https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/claude-plugins/chat/stata-mcp-win.mcpb)
 2. In Claude Desktop, click your **name** at the bottom left → **Settings** → open **Desktop app → Extensions** in the left list.
 
    <img src="images/claude-ext-1.png" alt="Claude Settings - Extensions" width="640">
@@ -27,7 +27,7 @@ The **chat** surface of Claude Desktop does not use plugins. To use the Stata to
 
 ## 2. Register the skills (slash commands)
 
-1. [Download `stata-skills-all-en.zip`](https://raw.githubusercontent.com/mhjung0822/stata_mcp-releases/main/claude-plugins/chat/stata-skills-all-en.zip)
+1. [Download `stata-skills-all-en.zip`](https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/claude-plugins/chat/stata-skills-all-en.zip)
 2. **Unzip it** — you get 12 per-skill zips
 3. Claude Desktop → **Settings → Skills** → Upload → upload the extracted **per-skill zips** (do not upload the bundle zip itself)
 4. Upload once and it applies automatically to every device on the same account

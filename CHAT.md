@@ -5,8 +5,8 @@ Claude Desktop 의 **채팅** 화면은 플러그인을 쓰지 않습니다. 채
 ## 1. 확장 프로그램 설치 (MCP 연결)
 
 1. 자신의 OS 에 맞는 파일 **하나만** 다운로드:
-   - Mac: [`stata-mcp-mac.mcpb`](https://raw.githubusercontent.com/mhjung0822/stata_mcp-releases/main/claude-plugins/chat/stata-mcp-mac.mcpb)
-   - Windows: [`stata-mcp-win.mcpb`](https://raw.githubusercontent.com/mhjung0822/stata_mcp-releases/main/claude-plugins/chat/stata-mcp-win.mcpb)
+   - Mac: [`stata-mcp-mac.mcpb`](https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/claude-plugins/chat/stata-mcp-mac.mcpb)
+   - Windows: [`stata-mcp-win.mcpb`](https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/claude-plugins/chat/stata-mcp-win.mcpb)
 2. Claude Desktop 왼쪽 아래 **이름**을 클릭 → **설정** → 왼쪽 목록의 **데스크톱 앱 → 확장 프로그램**을 엽니다.
 
    <img src="images/claude-ext-1.png" alt="Claude 설정 - 확장 프로그램 화면" width="640">
@@ -27,7 +27,7 @@ Claude Desktop 의 **채팅** 화면은 플러그인을 쓰지 않습니다. 채
 
 ## 2. 스킬 등록 (슬래시 명령)
 
-1. [`stata-skills-all.zip` 다운로드](https://raw.githubusercontent.com/mhjung0822/stata_mcp-releases/main/claude-plugins/chat/stata-skills-all.zip)
+1. [`stata-skills-all.zip` 다운로드](https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/claude-plugins/chat/stata-skills-all.zip)
 2. 받은 zip 의 **압축을 풀면** 스킬별 zip 12개가 나옵니다
 3. Claude Desktop → **설정 → Skills** → 업로드 → 압축 푼 **스킬별 zip** 들을 업로드 (묶음 zip 을 그대로 올리지 마세요)
 4. 한 번 올리면 같은 계정의 모든 기기에 자동 적용됩니다

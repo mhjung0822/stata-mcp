@@ -32,7 +32,7 @@ ChatGPT 데스크톱 앱에서도 연결할 수 있습니다 — 6장 참고.
 Stata 에서 한 줄:
 
 ```stata
-net install stata-mcp, from("https://raw.githubusercontent.com/mhjung0822/stata_mcp-releases/main/release") replace
+net install stata-mcp, from("https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/release") replace
 ```
 
 jar 2종 + ado/dlg 가 자동 다운로드됩니다. 설치는 이게 전부입니다 — 도움말 DB(~32MB)는 다음 장의 `mcp_connect` 가 처음 연결할 때 받을지 물어봅니다 (y 권장, 인터넷 연결 필요).
@@ -79,7 +79,7 @@ MCP 서버와 드론이 한 번에 기동됩니다. 첫 실행이면 도움말 D
 
 Mac·Windows 공용 파일 하나입니다. 코워크와 Claude Code 탭에서 쓸 수 있습니다.
 
-1. [`stata-mcp.plugin` 다운로드](https://raw.githubusercontent.com/mhjung0822/stata_mcp-releases/main/claude-plugins/stata-mcp.plugin)
+1. [`stata-mcp.plugin` 다운로드](https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/claude-plugins/stata-mcp.plugin)
 
    <img src="images/claude-plugin-1.png" alt="다운로드 폴더의 stata-mcp.plugin" width="640">
 

@@ -19,7 +19,7 @@ program mcp_setup
     version 17.0
     syntax [, UPDATEDB UPDATE UPDATECHECK(string)]
 
-    local base "https://raw.githubusercontent.com/mhjung0822/stata_mcp-releases/main/release"
+    local base "https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/release"
 
     * ─── update: 최신 버전 재설치 (net install 과 같은 경로 — 외부 도구 불필요) ──
     if "`update'" != "" {
