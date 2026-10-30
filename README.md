@@ -107,7 +107,7 @@ Mac·Windows 공용 파일 하나입니다. 코워크와 Claude Code 탭에서 �
 
    <img src="images/claude-plugin-7.png" alt="설치 완료 - Stata MCP 플러그인 화면" width="640">
 
-> 3장에서 서버(`mcp_connect`)를 먼저 띄워 두어야 도구가 동작합니다. 업데이트는 새 `.plugin` 파일로 같은 방법으로 다시 업로드. 슬래시 명령은 이름 앞에 `stata-mcp:` 가 붙습니다 (예: `/stata-mcp:stata-exec`) — 목록과 사용법은 [USAGE.md](USAGE.md).
+> 3장에서 서버(`mcp_connect`)를 먼저 띄워 두어야 도구가 동작합니다. 업데이트는 새 `.plugin` 파일로 같은 방법으로 다시 업로드. 슬래시 명령 목록과 사용법은 [USAGE.md](USAGE.md). Claude Code 탭에서는 이름 앞에 `stata-mcp:` 가 붙습니다 (예: `/stata-mcp:stata-exec`).
 
 ### 4-2. 채팅에서도 쓰려면 (선택)
 

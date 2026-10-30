@@ -104,7 +104,7 @@ One file for both Mac and Windows. It works in cowork and in the Claude Code tab
 
    <img src="images/claude-plugin-7.png" alt="Installed - Stata MCP plugin page" width="640">
 
-> Screenshots are from the Korean UI; button positions are the same. The server from step 3 (`mcp_connect`) must be running for the tools to work. To update, upload the new `.plugin` file the same way. Slash commands carry the `stata-mcp:` prefix (e.g. `/stata-mcp:stata-exec`) — see [USAGE.en.md](USAGE.en.md) for the list. The plugin ships the Korean skill texts; the English skill pack is in [CHAT.en.md](CHAT.en.md).
+> Screenshots are from the Korean UI; button positions are the same. The server from step 3 (`mcp_connect`) must be running for the tools to work. To update, upload the new `.plugin` file the same way. See [USAGE.en.md](USAGE.en.md) for the slash commands. In the Claude Code tab they carry the `stata-mcp:` prefix (e.g. `/stata-mcp:stata-exec`). The plugin ships the Korean skill texts; the English skill pack is in [CHAT.en.md](CHAT.en.md).
 
 ### 4-2. Also use it in chat (optional)
 
