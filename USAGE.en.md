@@ -33,7 +33,7 @@ mcp_setup
 > Menu-bar registration (User ▸ Stata-MCP) is handled by `mcp_setup`. If the menu
 > is missing on the next launch, run `mcp_menu, install` and follow the printed instructions.
 
-**Auto-shutdown** — when you quit Stata, the server cleans itself up shortly after.
+**Auto-shutdown** — when you quit Stata, the server cleans itself up 1 second later (default).
 Use the control panel's Auto-shutdown group to turn this off (keep the server running)
 or adjust the wait time, or use the command:
 
@@ -45,7 +45,7 @@ mcp_watchdog, enabled(0)
 - `grace(120)` — clean up the server 120 s after Stata quits
 - `enabled(0)` — disable auto-cleanup (server stays after Stata quits)
 
-> If you restart Stata and reconnect within the wait time, the server carries on without dropping the connection.
+> With a longer wait time, restarting Stata and reconnecting within it keeps the server running without dropping the connection.
 
 **Full uninstall**:
 
@@ -253,13 +253,36 @@ In short: **plain language = your request is interpreted and routed to the right
 mcp_connect, shutdown
 ```
 
-Stops both the server and the drone (same as the control panel's [Shutdown] button).
+Disconnects this Stata (same as the control panel's [Shutdown] button). If no other Stata is connected, the server also stops 1 second later.
 
 #### Automatic shutdown
 
-When you quit Stata, the server also cleans itself up shortly after (detection ~10 s + grace, 30 s by default). Restart Stata within the grace window and the server carries on — see the Auto-shutdown section above.
+When you quit Stata, the server also stops 1 second later. If several Stata sessions are connected, it stops when you quit the last one. You can change the wait time in the Auto-shutdown section above.
 
 > To stop only the server, `mcp_server, stop` also works.
+
+### 2-7. Using several Stata sessions (advanced)
+
+Open several Stata windows and run `mcp_connect` in each — all of them connect. Claude uses one Stata window by default. When there are several, Claude asks which one to use.
+
+#### Terminal Stata (Mac)
+
+You can also start Stata in a terminal and connect it. Give it a name so you can pick it, e.g. "run it in c1".
+
+```bash
+stata-mp -q 'mcp_connect, name(c1)'
+```
+
+#### Separate Stata from Claude Code (Mac)
+
+Claude Code can start extra Stata sessions with no window and run several models at the same time, while your Stata window stays free. This is off by default. To turn it on, add the line below to `stata_mcp.properties` and connect Stata again.
+
+```
+CONSOLE_TOOLS=on
+```
+
+- An extra Stata does not share the data in your window. Save the data you need to a file first.
+- Up to 3 can run at the same time.
 
 ---
 

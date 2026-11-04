@@ -545,16 +545,43 @@ program _graph_meta_sersets
     args name fname
     if "`fname'" == "" local fname "_mcp_ss"
 
+    // 1) .<name>.sersets[] 등록 ID 수집 (기존 path).
     local nss 0
     cap local nss `.`name'.sersets.arrnels'
     if _rc local nss 0
     if "`nss'" == "" local nss 0
 
-    mata: _mcp_gm.nss = `nss'
-    mata: _mcp_gm.sersets = J(1, `nss', serset_meta())
-
+    local sid_list ""
     forvalues i = 1/`nss' {
         local sid `.`name'.sersets[`i'].id'
+        local sid_list `sid_list' `sid'
+    }
+
+    // 2) plot iterate — .sersets[] 미등록 plot serset 보강 (mband / mspline 등 — Stata 가
+    //    자체 computed data 의 serset 을 graph object .sersets[] 에 등록 안 함. plot 의
+    //    `.serset.id` reference 로만 노출. plot.serset.id 직접 수집 → 누락 ID dedup append.).
+    local np 0
+    cap local np `.`name'.n_views'
+    if _rc local np 0
+    if "`np'" == "" local np 0
+    forvalues j = 1/`np' {
+        local psid .
+        cap local psid `.`name'.plotregion1.plot`j'.serset.id'
+        if !_rc & "`psid'" != "" & "`psid'" != "." {
+            if !`: list psid in sid_list' {
+                local sid_list `sid_list' `psid'
+            }
+        }
+    }
+
+    // 3) 통합 ID 목록으로 dump.
+    local n_total : list sizeof sid_list
+    mata: _mcp_gm.nss = `n_total'
+    mata: _mcp_gm.sersets = J(1, `n_total', serset_meta())
+
+    local i = 0
+    foreach sid of local sid_list {
+        local ++i
         cap frame drop `fname'
         cap frame create `fname'
         frame `fname' {

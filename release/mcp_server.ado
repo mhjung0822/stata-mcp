@@ -1,4 +1,4 @@
-*! mcp_server  v0.2.7  06oct2026
+*! mcp_server  v0.2.8  20oct2026
 *!
 *! Start / check / stop stata-mcp-server.jar located in the Stata
 *! PERSONAL ado folder (resolved via `findfile`, so no path argument
@@ -138,10 +138,13 @@ program mcp_server
         * 시 8001 재바인드 실패 + 응답 없는 좀비 LISTEN 이 남는 사고 방지
         * (2026-08-03 실사고). 바깥 작은따옴표라 $fd 는 sh 를 그대로 통과,
         * Stata 단계에선 \$ 로 글로벌 매크로 확장 회피 (전달 경로 실기검증됨).
+        * nohup + </dev/null — 서버는 띄운 Stata 와 같은 프로세스 그룹·터미널에 남는다. 콘솔 Stata 가
+        * 띄운 뒤 그 터미널 창을 닫으면 SIGHUP 이 서버까지 닿아, 다른 Stata(GUI)가 붙어 있어도 서버가
+        * 죽었다 (2026-10-20 실측). JVM 은 기동 시 무시 상태인 SIGHUP 을 그대로 둔다.
         * quietly — shell 의 잔여 빈 줄 출력 억제.
         local jrun "java"
         if `"`jbin'"' != "" local jrun `""`jbin'""'
-        quietly shell bash -c 'for fd in {3..1023}; do eval "exec \$fd>&-"; done 2>/dev/null; `jrun' -jar "`jar'" >/dev/null 2>&1 & disown'
+        quietly shell bash -c 'for fd in {3..1023}; do eval "exec \$fd>&-"; done 2>/dev/null; nohup `jrun' -jar "`jar'" </dev/null >/dev/null 2>&1 & disown'
     }
     di as text "[Server] spawned (detached)"
 end

@@ -40,7 +40,7 @@ BEGIN
   GROUPBOX gb_wd     10    211 360   58,  label("Auto-shutdown (Stata quit -> server cleanup)")
   CHECKBOX ck_wd     20    233 175    .,  label("Auto-stop when Stata quits") default(1)
   TEXT     tx_gr     200   235 55     .,  label("Grace(s):")
-  SPINNER  sp_gr     255   233 50     .,  default(30) min(5) max(3600)
+  SPINNER  sp_gr     255   233 50     .,  default(1) min(0) max(3600)
   BUTTON   bt_wd     310   232 50    24,  label("Apply")   ///
              onpush(program do_watchdog)
 END

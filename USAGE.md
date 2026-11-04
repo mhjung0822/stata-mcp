@@ -33,7 +33,7 @@ mcp_setup
 > 메뉴바 등록(User ▸ Stata-MCP)은 `mcp_setup` 이 함께 처리합니다. 다음 실행에서
 > 메뉴가 안 보이면 `mcp_menu, install` 을 실행하고 출력 안내를 따르세요.
 
-**자동 종료 (Auto-shutdown)** — Stata 를 종료하면 서버도 잠시 뒤 스스로 정리됩니다.
+**자동 종료 (Auto-shutdown)** — Stata 를 종료하면 서버도 1초 뒤(기본) 스스로 정리됩니다.
 제어판의 Auto-shutdown 그룹에서 끄거나(서버 상주) 대기 시간을 조절할 수 있고,
 명령으로도 됩니다:
 
@@ -45,7 +45,7 @@ mcp_watchdog, enabled(0)
 - `grace(120)` — Stata 종료 후 120초 뒤 서버 정리
 - `enabled(0)` — 자동 정리 끄기 (Stata 를 꺼도 서버 유지)
 
-> 대기 시간 안에 Stata 를 다시 켜고 연결하면 서버는 끊기지 않고 그대로 이어집니다.
+> 대기 시간을 늘려 두면, 그 안에 Stata 를 다시 켜고 연결할 때 서버가 끊기지 않고 그대로 이어집니다.
 
 **전체 제거**:
 
@@ -253,13 +253,36 @@ Claude 를 통해 실행한 명령(변수 생성·삭제·이름 변경·라벨 
 mcp_connect, shutdown
 ```
 
-서버·드론이 모두 정지됩니다 (제어판 [Shutdown] 버튼과 동일).
+이 Stata 의 연결을 끊습니다 (제어판 [Shutdown] 버튼과 동일). 연결된 Stata 가 더 없으면 서버도 1초 뒤 꺼집니다.
 
 #### 자동 종료
 
-Stata 를 종료하면 서버도 잠시 뒤(감지 ~10초 + 대기시간, 기본 30초) 자동 종료됩니다. 대기시간 안에 Stata 를 다시 켜면 서버는 그대로 이어집니다 — 위 Auto-shutdown 절 참고.
+Stata 를 종료하면 서버도 1초 뒤 자동 종료됩니다. Stata 를 여러 개 연결했다면 마지막 Stata 를 끌 때 꺼집니다. 대기시간은 위 Auto-shutdown 절에서 바꿀 수 있습니다.
 
 > 서버만 따로 내리려면 `mcp_server, stop` 도 가능합니다.
+
+### 2-7. Stata 여러 개 쓰기 (고급)
+
+Stata 창을 여러 개 띄우고 각각 `mcp_connect` 하면 모두 연결됩니다. Claude 는 기본으로 Stata 창 하나를 씁니다. 창이 여러 개면 어느 창을 쓸지 Claude 가 물어봅니다.
+
+#### 터미널 Stata (Mac)
+
+터미널에서 Stata 를 띄워 연결할 수도 있습니다. 이름을 붙여 두면 "c1 에서 돌려줘" 처럼 고를 수 있습니다.
+
+```bash
+stata-mp -q 'mcp_connect, name(c1)'
+```
+
+#### Claude Code 에서 별도 Stata 띄우기 (Mac)
+
+Claude Code 가 화면 없는 Stata 를 따로 띄워, 여러 모형을 동시에 돌리게 할 수 있습니다. 그동안 Stata 창은 막히지 않습니다. 기본은 꺼져 있습니다. 켜려면 `stata_mcp.properties` 에 아래 한 줄을 넣고 Stata 를 다시 연결하세요.
+
+```
+CONSOLE_TOOLS=on
+```
+
+- 별도 Stata 는 창의 데이터를 공유하지 않습니다. 쓸 데이터는 파일로 저장해 두세요.
+- 동시에 3개까지 띄울 수 있습니다.
 
 ---
 

@@ -1,12 +1,12 @@
-*! mcp_watchdog  v0.1.0  03aug2026
+*! mcp_watchdog  v0.1.1  20oct2026
 *!
-*! PID 워치독(Stata 종료 시 서버 자동 정리) 설정.
+*! Stata 종료 시 서버 자동 종료 설정 (마지막 Stata 가 끝나면 grace 초 뒤 종료).
 *!   1) stata_mcp.properties (server jar 옆) 에
 *!      enabled / grace-seconds 를 기록 → 서버 재시작 후에도 유지
 *!   2) 떠 있는 브릿지에 POST /api/watchdog → 재시작 없이 즉시 반영
 *!
 *! Usage:
-*!   mcp_watchdog                            // enabled=1, grace=30 (기본)
+*!   mcp_watchdog                            // enabled=1, grace=1 (기본)
 *!   mcp_watchdog, grace(120)                // 유예 120초
 *!   mcp_watchdog, enabled(0)                // 자동 정리 끄기 (서버 상주)
 *!   mcp_watchdog, grace(60) enabled(1) bridgeport(8090)
@@ -16,10 +16,10 @@
 cap program drop mcp_watchdog
 program mcp_watchdog
     version 17.0
-    syntax [, GRace(integer 30) ENabled(integer 1) BRIDGEPORT(integer 8080)]
+    syntax [, GRace(integer 1) ENabled(integer 1) BRIDGEPORT(integer 8080)]
 
-    if `grace' < 5 | `grace' > 3600 {
-        di as error "mcp_watchdog: grace() must be between 5 and 3600 seconds"
+    if `grace' < 0 | `grace' > 3600 {
+        di as error "mcp_watchdog: grace() must be between 0 and 3600 seconds"
         exit 198
     }
     if `enabled' != 0 & `enabled' != 1 {

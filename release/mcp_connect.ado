@@ -1,4 +1,4 @@
-*! mcp_connect  v0.3.12  08oct2026
+*! mcp_connect  v0.3.13  20oct2026
 *!
 *! Start / stop / reset the full Stata-MCP stack (server jar + drone).
 *! Internally invokes mcp_server for the JVM-detached server spawn and
@@ -9,17 +9,21 @@
 *!   mcp_connect, shutdown                  // drone + server stop
 *!   mcp_connect, reset                     // both stop + restart
 *!   mcp_connect, bridgeport(8090) droneport(9001)
+*!   mcp_connect, name(agent1)              // 이름 붙여 연결 (Stata 여러 개를 한 서버에)
 *!
 *! Notes:
 *! - `mcp_server` (separate ado) handles the bash-disown spawn so the
 *!   server jar runs independently of Stata's JVM hierarchy.
 *! - Drone uses Stata's `javacall` and shares the Stata JVM.
 *! - Both server and drone are idempotent — if already running, skip spawn.
+*! - Several Stata sessions can attach to one server: each drone takes the next
+*!   free port (8001, 8002, ...) and registers by PID; the server picks the GUI
+*!   one by default. The server exits when the last Stata leaves.
 
 cap program drop mcp_connect
 program mcp_connect
     version 17.0
-    syntax [, RESET SHUTDOWN BRIDGEPORT(integer 8080) DRONEPORT(integer 8001)]
+    syntax [, RESET SHUTDOWN NAME(string) BRIDGEPORT(integer 8080) DRONEPORT(integer 0)]
 
     * Windows cmd 는 /dev/null 을 경로로 해석해 명령이 깨짐 → OS 분기 (mcp_server 와 동일)
     local devnul = cond("`c(os)'" == "Windows", "nul", "/dev/null")
@@ -69,12 +73,12 @@ program mcp_connect
         }
     }
 
-    * ─── shutdown: 드론 + 서버 모두 종료 ──────────────────────────────────
+    * ─── shutdown: 이 Stata 의 드론 종료 ───────────────────────────────────
+    * 서버는 끄지 않는다 — 다른 Stata 가 붙어 있을 수 있음. 마지막 Stata 가 빠지면
+    * 서버가 유예 후 스스로 종료한다.
     if "`shutdown'" != "" {
         di as text "[Drone] Shutdown requested..."
         capture javacall com.stata_mcp.drone.StataDrone stop, jars(stata-drone.jar)
-        di as text "[Server] Shutdown requested..."
-        capture mcp_server, stop
         exit
     }
 
@@ -104,47 +108,41 @@ program mcp_connect
     if "`reset'" != "" {
         di as text "[Reset] Stopping drone + server, then restarting..."
         capture javacall com.stata_mcp.drone.StataDrone stop, jars(stata-drone.jar)
-        capture mcp_server, stop
+        * 서버 재시작은 붙은 Stata 가 이 세션뿐일 때만 (다른 Stata 연결을 끊지 않게)
+        _mcp_others, bridgeport(`bridgeport')
+        if r(n) == 0 capture mcp_server, stop bridgeport(`bridgeport')
         sleep 1500
     }
 
     * ─── 서버 먼저 띄움 (mcp_server 가 idempotency 처리) ──────────────────
     di as text "[Server] starting..."
-    mcp_server
+    mcp_server, bridgeport(`bridgeport')
 
     * 서버 준비 대기 (Spring Boot 부팅 시간)
     sleep 2000
 
-    * ─── 드론 시작 (이미 떠있으면 skip) ───────────────────────────────────
-    tempfile dchk
-    capture shell curl -s --max-time 1 -H "X-Stata-MCP: 1" http://127.0.0.1:`droneport'/status > "`dchk'" 2>`devnul'
-    local drone_up = 0
-    tempname dfh
-    capture file open `dfh' using "`dchk'", read text
-    if !_rc {
-        file read `dfh' dline
-        capture file close `dfh'
-        if `"`dline'"' != "" local drone_up = 1
-    }
+    * ─── 드론 시작 (이 Stata 에서 이미 떠있으면 skip) ──────────────────────
+    * 포트 응답으로 판정하면 다른 Stata 창의 드론을 자기 것으로 오인한다 (Windows 다중 창)
+    * → 이 JVM 안의 드론 상태를 직접 묻는다.
+    * 이 세션에 드론 jar 가 로드됨 — 이후 mcp_setup, update 가 jar 교체를 거부하는 근거
+    * (Windows 는 파일 잠금, Mac 은 실행 중 JVM 의 jar 를 덮어쓰면 깨짐). 정책 차단돼도 로드는 됨
+    global MCP_DRONE_LOADED 1
+    capture javacall com.stata_mcp.drone.StataDrone running, jars(stata-drone.jar)
+    local drone_up = (_rc == 0)
 
     if `drone_up' {
-        di as text "[Drone] already running on port `droneport' — skip spawn"
-        * /status 응답에서 버전 추출해 표시 (fresh 기동 시엔 드론이 직접 출력)
-        if regexm(`"`dline'"', `""version":"([^"]+)""') {
-            di as text "[Drone] Stata-MCP v" regexs(1)
-        }
+        di as text "[Drone] already running in this Stata — skip spawn"
     }
     else {
         di as text "[Drone] Starting Java Stata-MCP-Drone..."
-        * 이 세션에 드론 jar 가 로드됨 — 이후 mcp_setup, update 가 jar 교체를 거부하는 근거
-        * (Windows 는 파일 잠금, Mac 은 실행 중 JVM 의 jar 를 덮어쓰면 깨짐). 정책 차단돼도 로드는 됨
-        global MCP_DRONE_LOADED 1
+        * droneport 0 = 드론이 8001 부터 빈 포트를 고른다
         capture noisily javacall com.stata_mcp.drone.StataDrone start, ///
-            args("`bridgeport'" "`droneport'") jars(stata-drone.jar)
+            args("`bridgeport'" "`droneport'" `"`name'"') jars(stata-drone.jar)
         if _rc == 690 {
             * 원격 정책 차단 (StataDrone.RC_BLOCKED — 제공 종료·강제 업데이트).
-            * 안내는 드론이 출력했다. 먼저 띄운 서버까지 내리고 오류 없이 끝낸다.
-            capture mcp_server, stop
+            * 안내는 드론이 출력했다. 다른 Stata 가 없으면 먼저 띄운 서버까지 내리고 오류 없이 끝낸다.
+            _mcp_others, bridgeport(`bridgeport')
+            if r(n) == 0 capture mcp_server, stop bridgeport(`bridgeport')
             exit
         }
         if _rc exit _rc
@@ -156,8 +154,9 @@ program mcp_connect
     * ─── help DB 선체크 — 없으면 1회 제안 ──────────────────────────────────
     * 거절하면 마커 파일을 남겨 매 연결마다 묻지 않는다. 나중엔 mcp_setup.
     * 연결 자체는 이미 끝난 뒤라 다운로드 실패/거절이 연결을 막지 않는다.
+    * 콘솔 Stata 는 건너뜀 — 서버가 띄운 콘솔은 입력이 없어 _request 에서 영원히 멈춘다
     capture confirm file `"`c(sysdir_plus)'jar/help_index_v2.json"'
-    if _rc {
+    if _rc & "`c(console)'" != "console" {
         capture confirm file `"`c(sysdir_plus)'jar/helpdb_skip"'
         if _rc {
             di as text "[Setup] 도움말 DB가 없습니다 (~32MB, 최초 1회)."
@@ -182,4 +181,24 @@ program mcp_connect
     }
 
     * (제어판 [연결] 버튼이 이 명령을 호출해 서버+드론을 기동)
+end
+
+* 서버에 붙은 "다른" Stata 수 → r(n). 서버가 없거나 응답이 없으면 0.
+cap program drop _mcp_others
+program _mcp_others, rclass
+    syntax , BRIDGEPORT(integer)
+    local devnul = cond("`c(os)'" == "Windows", "nul", "/dev/null")
+    tempfile chk
+    capture shell curl -s --max-time 1 http://127.0.0.1:`bridgeport'/api/drones > "`chk'" 2>`devnul'
+    local line ""
+    tempname fh
+    capture file open `fh' using "`chk'", read text
+    if !_rc {
+        file read `fh' line
+        capture file close `fh'
+    }
+    local n = 0
+    if regexm(`"`line'"', `""count":([0-9]+)"') local n = real(regexs(1))
+    * 이 세션의 드론은 이미 stop 했으므로 목록에 남은 수 = 다른 Stata 수
+    return scalar n = `n'
 end
