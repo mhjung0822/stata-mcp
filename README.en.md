@@ -74,7 +74,26 @@ Starts the MCP server and the drone in one go. On first run it offers the help-D
 
 ### 4-1. Install the plugin (MCP connection + slash commands)
 
-One file for both Mac and Windows. It works in cowork and in the Claude Code tab.
+One package for both Mac and Windows. It works in cowork and in the Claude Code tab. Pick one of the two methods.
+
+**Method A — marketplace (register once, updates arrive by themselves)**
+
+1. In Claude Desktop, click your **name** at the bottom left → **Settings** → **Customize → Plugins**
+2. Click **+ Add** at the top right → **Add marketplace** → enter the GitHub address `mhjung0822/stata-mcp`
+3. **Install** the **Stata MCP** entry that appears → click **Continue** in the "local MCP server" dialog
+4. Turn on **Auto-update** on the marketplace entry so new versions arrive on their own
+
+In a Claude Code terminal, these two lines do the same:
+
+```bash
+claude plugin marketplace add mhjung0822/stata-mcp
+```
+
+```bash
+claude plugin install stata-mcp@stata-mcp
+```
+
+**Method B — upload the file** (offline, or when method A is not offered)
 
 1. [Download `stata-mcp.plugin`](https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/claude-plugins/stata-mcp.plugin)
 
@@ -104,7 +123,7 @@ One file for both Mac and Windows. It works in cowork and in the Claude Code tab
 
    <img src="images/claude-plugin-7.png" alt="Installed - Stata MCP plugin page" width="640">
 
-> Screenshots are from the Korean UI; button positions are the same. The server from step 3 (`mcp_connect`) must be running for the tools to work. To update, upload the new `.plugin` file the same way. See [USAGE.en.md](USAGE.en.md) for the slash commands. In the Claude Code tab they carry the `stata-mcp:` prefix (e.g. `/stata-mcp:stata-exec`). The plugin ships the Korean skill texts; the English skill pack is in [CHAT.en.md](CHAT.en.md).
+> Screenshots are from the Korean UI; button positions are the same. The server from step 3 (`mcp_connect`) must be running for the tools to work. Updates: method A is automatic (or **Update** on the marketplace entry); for method B upload the new `.plugin` file the same way. See [USAGE.en.md](USAGE.en.md) for the slash commands. In the Claude Code tab they carry the `stata-mcp:` prefix (e.g. `/stata-mcp:stata-exec`). The plugin ships the Korean skill texts; the English skill pack is in [CHAT.en.md](CHAT.en.md).
 
 ### 4-2. Also use it in chat (optional)
 

@@ -77,7 +77,26 @@ MCP 서버와 드론이 한 번에 기동됩니다. 첫 실행이면 도움말 D
 
 ### 4-1. 플러그인 설치 (MCP 연결 + 슬래시 명령)
 
-Mac·Windows 공용 파일 하나입니다. 코워크와 Claude Code 탭에서 쓸 수 있습니다.
+Mac·Windows 공용입니다. 코워크와 Claude Code 탭에서 쓸 수 있습니다. 두 방법 중 하나를 고르세요.
+
+**방법 A — 마켓플레이스 (한 번 등록하면 이후 업데이트 자동)**
+
+1. Claude Desktop 왼쪽 아래 **이름**을 클릭 → **설정** → **사용자 지정 → 플러그인**
+2. 오른쪽 위 **+ 추가** → **마켓플레이스 추가** → GitHub 주소에 `mhjung0822/stata-mcp` 입력
+3. 목록에 나온 **Stata MCP** 를 **설치** → "로컬 MCP 서버" 안내 창에서 **계속**
+4. 마켓플레이스 항목에서 **자동 업데이트** 를 켜 두면 새 버전이 나올 때 알아서 받습니다
+
+Claude Code 터미널에서는 아래 두 줄로 같은 결과입니다.
+
+```bash
+claude plugin marketplace add mhjung0822/stata-mcp
+```
+
+```bash
+claude plugin install stata-mcp@stata-mcp
+```
+
+**방법 B — 파일 업로드** (오프라인·방법 A 가 안 보이는 환경)
 
 1. [`stata-mcp.plugin` 다운로드](https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/claude-plugins/stata-mcp.plugin)
 
@@ -107,7 +126,7 @@ Mac·Windows 공용 파일 하나입니다. 코워크와 Claude Code 탭에서 �
 
    <img src="images/claude-plugin-7.png" alt="설치 완료 - Stata MCP 플러그인 화면" width="640">
 
-> 3장에서 서버(`mcp_connect`)를 먼저 띄워 두어야 도구가 동작합니다. 업데이트는 새 `.plugin` 파일로 같은 방법으로 다시 업로드. 슬래시 명령 목록과 사용법은 [USAGE.md](USAGE.md). Claude Code 탭에서는 이름 앞에 `stata-mcp:` 가 붙습니다 (예: `/stata-mcp:stata-exec`).
+> 3장에서 서버(`mcp_connect`)를 먼저 띄워 두어야 도구가 동작합니다. 업데이트: 방법 A 는 자동(또는 마켓플레이스 항목의 **업데이트**), 방법 B 는 새 `.plugin` 파일을 같은 방법으로 다시 업로드. 슬래시 명령 목록과 사용법은 [USAGE.md](USAGE.md). Claude Code 탭에서는 이름 앞에 `stata-mcp:` 가 붙습니다 (예: `/stata-mcp:stata-exec`).
 
 ### 4-2. 채팅에서도 쓰려면 (선택)
 

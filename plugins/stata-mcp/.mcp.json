@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "StataMCP": {
+      "command": "${CLAUDE_PLUGIN_ROOT}/server/stata-mcp-proxy",
+      "args": []
+    }
+  }
+}
