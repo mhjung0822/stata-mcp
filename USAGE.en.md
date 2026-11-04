@@ -159,7 +159,7 @@ Tools Claude uses to check Stata syntax on its own — you rarely call them your
 
 Instead of switching to the Stata window to check variable names, keep a variable list next to Claude and use what you pick there directly in your analysis.
 
-<img src="images/vars-page-cowork.png" alt="Cowork screen — the Claude chat in the middle, the variable page in the browser panel on the right" width="900">
+<img src="images/vars-page-cowork.png" alt="Claude Desktop — the Claude chat in the middle, the variable page in the browser panel on the right (model price length c.weight##i.foreign)" width="900">
 
 **How to open it** (any of these)
 
@@ -169,19 +169,50 @@ Instead of switching to the Stata window to check variable names, keep a variabl
 
 **What you can do there**
 
-- See every variable's name, storage type, display format and label at a glance; variables with value labels have a ▶ to expand them
-- Search (name, label, value labels) and filter by type (all / numeric / string / selected)
-- Pick variables with the **checkboxes**, or type a Stata varlist in the box (`price mpg`, `rep78-foreign`, `wt*` — ranges and wildcards work). The header checkbox selects every variable currently shown
-- **Y / X tags**: tick variables and press `[Y]` or `[X]`, or click a row's `–` chip to cycle `Y → X → –`. Tags appear in the column next to the name
-- Drag the right edge of the `Variable` header to resize the columns; `Refresh` re-reads anything you changed directly in the Stata window
+- See every variable's name, storage type, display format and label at a glance. Variables with value labels have a ▶ on the row; the ▶ in the header expands or collapses all of them. `A−`/`A+` at the top right changes the text size, `?` shows the help
+- Search — name, label, value labels, and typing "numeric" or "string" keeps only that type
+- The input box has two fields, **Selection** and **Model**; switch between them with `Selection | Model` at the top. Each field keeps its own value
+- **Selection** — the variable list for tasks with no roles (summary statistics, tabulations, graphs …). Press ✔ on a row, or type a name in the field and press Enter to make a chip (several separated by spaces; pasting works). Ranges `rep78-foreign`, wildcards `wt*` and `_all` work too, and `Expand` turns them into variable names. The header ✔ selects every variable currently shown
+- **Model** — the regression model in Stata syntax on one line (`price mpg i.rep78 c.weight##i.foreign`). The first chip is Y, the rest are X. Pressing a row's `Y`·`X`·`i.` tag rewrites the line as well. `To model →` moves the selection list into the line, and `Recent ▾` brings back a line you used before. Variables in the model are added to the selection list too
+- Click a chip to edit it in place, × to remove it, drag to reorder. Type a few letters of a name and candidates appear underneath (↑↓ to choose, Tab or Enter to fill)
+- A variable that does not exist becomes a warning chip; `Drop n errors` removes them all at once
+- Press the `Selection n`·`Model n`·`Y`·`X`·`i.` badges to see only those variables. Drag the right edge of the `Variable` header to resize the columns; `↻` re-reads anything you changed directly in the Stata window
 
 **How Claude uses it**
 
-- "Summary statistics for the selected variables" → `summarize` on the ticked variables
-- "Run a regression with the selected variables" → `regress` with the Y tag as the outcome and the X tags as regressors. If nothing is tagged Y, Claude asks which variable it is
-- If nothing is selected, Claude does not guess — it asks you to pick variables in the page or name them
+- "Summary statistics for the selected variables" → `summarize` on the variables in the selection field
+- "Run the model" → `regress` with the model line exactly as written. If the line is empty, Claude asks which variables to use
+- If both are empty, Claude does not guess — it asks you to pick variables in the page or name them
 
-Commands run through Claude (creating, dropping, renaming or labelling variables) show up in the page immediately. Commands typed directly in the Stata window appear after you press `Refresh` or after the next command through Claude. Selections and tags are cleared when Stata reconnects.
+Commands run through Claude (creating, dropping, renaming or labelling variables) show up in the page immediately. Commands typed directly in the Stata window appear after you press `↻` or after the next command through Claude. Opening a different dataset clears the selection and the model. The model line is stored inside the data, so it comes back when you open that data again, and it stays in a `save`d file.
+
+### 2-4c. Workflow — analysis by a set procedure (beta)
+
+The server asks you step by step about a panel analysis, runs it as answered and produces the report. Two procedures exist for now — **panel analysis** (linear panel models FE · RE · CRE, estimation and tests) and **panel data build** (wave files in the working folder into one panel). It is a beta: wording and order may change.
+
+<img src="images/workflow-page-cowork.png" alt="Claude Desktop — in the chat on the left Claude hands a newly created variable to the workflow; the workflow page in the browser panel on the right asks the first question" width="900">
+
+**How to open it**
+
+- `/stata-workflow` — it first asks which procedure. You can name it, as in `/stata-workflow panel analysis`
+- Or just say "run it as a workflow", "FE analysis of lnwage on age tenure in the workflow"
+- With a browser panel (Claude Code · Cowork) the workflow page opens in the panel on the right; in plain chat the same questions come as chat questions
+
+**The page**
+
+- Step chips at the top: `Start → Model → Panel → Variables → Report → Check → Confirm run`. Press a chip to go back to that step
+- Each box has a question, the options and their explanation, with `Back` `Restart` `OK` underneath
+- The first question offers **Step by step** (the four steps with explanations, one after another) or **Proceed with defaults** (keep the defaults, only check the settings, confirm once before running)
+
+**Together with the chat**
+
+- While answering in the page you can write in chat "drop grade in the workflow" or "where is the workflow now" and Claude applies it to the current box
+- If a variable has to be created first, create it in chat and hand it to the workflow (the picture above: a log-wage variable is created and handed over, then the page continues)
+
+**The result**
+
+- When the run finishes the report page opens — settings, result tables, sensitivity analysis, references. The HTML is saved in the working folder automatically
+- The save box in the report offers `Save Word` `Save Hangul` `Save do-file` `Save all`. The documents contain the result tables and the sensitivity analysis, without interpretation — that is the researcher's part; ask Claude in chat when you want it
 
 ### 2-5. Slash-command skills
 
@@ -195,7 +226,8 @@ The rest, as needed:
 - `/stata-help command` — check syntax. When Claude misuses an option, this corrects it (`xtreg` → `xtreg fe` → `xtreg fe.vce`, cascading)
 - `/stata-data-context` — resynchronize when Claude's picture of the data is stale (you changed the data in the Stata window). For a full profile use `/stata-data-fullcontext` (+ codebook)
 - `/stata-graph-export` — save the current graph as a PNG in the working folder / `/stata-graph-get` — inspect the graph spec
-- `/stata-vars` — open the variable page. Browse names, labels and value labels, tick variables or tag them Y/X, then just say "with the selected variables …" and Claude uses them (`/stata-setup` offers to open it)
+- `/stata-vars` — open the variable page. Browse names, labels and value labels, tick variables or write a model line, then just say "with the selected variables …" or "run the model" and Claude uses them (`/stata-setup` offers to open it)
+- `/stata-workflow [procedure]` — start a workflow (beta): panel analysis or panel data build, step-by-step questions through to the report (2-4c)
 
 The working instructions (`stata-instruction`) can be edited to change output formats and analysis rules. Panel merging responds to plain language like "merge the waves".
 
