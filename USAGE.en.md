@@ -111,7 +111,7 @@ Variants:
 - `llm push, note(main spec for slides) > regress ..., robust` — attaches a note in plain language (easy to find later)
 - `llm push, clear` — clears unread items and pushes fresh (cleanup)
 
-- `llm push` **stores** the result and notifies Claude instantly
+- `llm push` **stores** the result. A conversation with the push app open receives it right away and summarizes it (2-2b)
 - Claude picks up unread items one by one — push several times in a row and they accumulate in order
 
 #### The push store — reading does not delete
@@ -130,6 +130,35 @@ Retrieved results are not deleted, only **marked as read**. Everything is kept f
 - If the server is briefly down, results are kept and delivered later (nothing is lost)
 
 > If the notification doesn't appear on its own, just say **"check the push results"** in the chat.
+
+### 2-2b. Push app — collect results and send them to Claude (beta)
+
+In Claude Code and Cowork you can see push results as a list and send the ones you pick to Claude.
+
+**Open / close**
+
+- **"Open the push app"** or `/stata-push` — the push app opens in the side panel and this conversation starts receiving pushes
+- **"Close the push app"** or `/stata-push off` — this conversation stops receiving
+- **"Is push on?"** — tells you whether this conversation is receiving
+
+**The 「Claude 에게」 (To Claude) box**
+
+- 「바로 정리」 (Summarize now) — Claude summarizes each new push right away / 「쌓아 두기」 (Keep) — pushes only pile up in the list and go to Claude when you press [Claude 에게 보내기] (Send to Claude)
+- 「요청」 (Request) — what to say along with a send (e.g. compare the two regressions in one table). 「요청 추가」 (Add request) on a card applies to that result only
+- 「보낸 뒤 지우기」 (Delete after sending) — results Claude has taken are removed from the list
+- 「여러 대화에서 받기」 (Receive in several conversations) — off (default): only the conversation that opened the push app last receives. On: every conversation that opened it receives
+
+**The list**
+
+- Colors: blue = latest, gray = not sent, orange = sent
+- 「받는 대화」 (Receiving) in the header — how many conversations are receiving now. With 「없음」 (none), sent results wait until a conversation runs `/stata-push`
+- Click a card's header to expand or collapse · notes · search · filters (all · unread · async · sent)
+- [저장] (Save) · [불러오기] (Load) — as `push_*.json` in Stata's working folder
+- Results that arrive while Claude is answering come in right after the answer ends
+
+While you work with the variable window open, a new push shows a notice at its top.
+
+In the chat tab, say "show me the push results" to fetch them.
 
 ### 2-3. Graphs / saved files
 
@@ -227,6 +256,7 @@ The rest, as needed:
 - `/stata-data-context` — resynchronize when Claude's picture of the data is stale (you changed the data in the Stata window). For a full profile use `/stata-data-fullcontext` (+ codebook)
 - `/stata-graph-export` — save the current graph as a PNG in the working folder / `/stata-graph-get` — inspect the graph spec
 - `/stata-vars` — open the variable page. Browse names, labels and value labels, tick variables or write a model line, then just say "with the selected variables …" or "run the model" and Claude uses them (`/stata-setup` offers to open it)
+- `/stata-push` — open the push app (beta) + receive in this conversation (`/stata-push off` to stop, 2-2b)
 - `/stata-workflow [procedure]` — start a workflow (beta): panel analysis or panel data build, step-by-step questions through to the report (2-4c)
 
 The working instructions (`stata-instruction`) can be edited to change output formats and analysis rules. Panel merging responds to plain language like "merge the waves".
