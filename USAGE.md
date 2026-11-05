@@ -135,6 +135,8 @@ llm push
 
 Claude Code·코워크에서 push 결과를 목록으로 보고, 골라서 Claude 에게 보낼 수 있습니다.
 
+<img src="images/push-app-cowork.png" alt="Claude 데스크톱 — 가운데 대화에 push 앱에서 넘어온 「[push] 새 결과 #8」 과 Claude 의 정리, 오른쪽 브라우저 패널의 push 앱(받는 대화 1 · 바로 정리 · 목록)" width="900">
+
 **열기·끄기**
 
 - **"푸쉬앱 열어 줘"** 또는 `/stata-push` — 옆 패널에 push 앱이 열리고, 이 대화가 push 를 받기 시작합니다

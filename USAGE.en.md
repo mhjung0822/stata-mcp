@@ -135,6 +135,8 @@ Retrieved results are not deleted, only **marked as read**. Everything is kept f
 
 In Claude Code and Cowork you can see push results as a list and send the ones you pick to Claude.
 
+<img src="images/push-app-cowork.png" alt="Claude Desktop — in the chat in the middle, a new push (#8) delivered from the push app and Claude's summary; the push app in the browser panel on the right (one receiving conversation, Summarize now, the list)" width="900">
+
 **Open / close**
 
 - **"Open the push app"** or `/stata-push` — the push app opens in the side panel and this conversation starts receiving pushes
