@@ -49,9 +49,10 @@ description: |
 - **데이터 컨텍스트 갱신**: 데이터 구조·내용 변경(use/merge/drop/generate/replace/reshape 등)
   후, 또는 변수·관측치 정보가 필요한데 없거나 오래됐으면 `/stata-data-context` 를 호출해 갱신.
 - **장기 명령**(bootstrap/simulate/mi impute 등 ~30초 이상 예상): `executeStataAsync` 로
-  던지고 대화를 계속한다. 실행 중 다른 Stata 툴은 즉시 `busy`. 완료 결과는 push 저장소로
-  배달 — `getPushResults("")` 로 회수하고, 빈 응답의 `asyncRunning`/`runningForSeconds` 로
-  진행 여부를 판단해 폴링 간격을 정한다.
+  던지고 턴을 끝낸다(폴링 금지). 실행 중 다른 Stata 툴은 즉시 `busy`. 완료 결과는 push 로
+  들어온다 — push 듣기가 켜져 있으면 「[push] 새 결과 #n — 요청」 메시지로 저절로, 아니면
+  사용자가 `/stata-pull` 로 회수. 빈 응답의 `asyncRunning`/`runningForSeconds` 는 사용자가
+  물을 때 진행 상황 답변용.
 - **push 저장소**: pull 은 삭제가 아니라 **읽음 표시** — 결과는 보존된다.
   `history [키워드]` = 시간순 목차·검색 (cmd+output+note 부분일치), `note <id> <텍스트>` =
   자연어 메모 (검색 대상 — async 결과를 pull 한 뒤 메모를 달아두면 나중에 찾기 쉬움),

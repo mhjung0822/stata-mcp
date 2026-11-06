@@ -86,11 +86,11 @@ For slow commands like bootstrap / simulate / mi impute, Claude uses `executeSta
 ```
 Run a 300,000-rep bootstrap → (immediately) "Started. Feel free to do other things while it runs."
    ... chat freely in the meantime (model questions, writing, planning the next analysis) ...
-Done → the full results arrive as a push (notification) → "show me the results" → table + interpretation
+Done → a conversation with the push app open gets it on its own and summarizes it (otherwise "show me the results") → table + interpretation
 ```
 
 - Other Stata commands during the run get an immediate `busy` response (no waiting, chat never blocks)
-- The completed result (full output + `rc` + elapsed time) is delivered to the push store — retrieved via `getPushResults`
+- The completed result (full output + `rc` + elapsed time) goes to the push store — a conversation with the push app open (2-2b) receives it as "[push] 새 결과" as soon as it finishes and summarizes it; otherwise say "check the push results" or use `/stata-pull`
 - Stored r()/e() results are preserved exactly as in a normal run (query with `getMacro("e(b)")` etc.)
 - One job at a time (the Stata engine is single-threaded)
 
@@ -109,6 +109,7 @@ Variants:
 - `llm push` — pushes r()/e() (added to the store + instant notification)
 - `llm push > regress price mpg weight` — runs the command after `>`, pushes the output screen + r()/e()
 - `llm push, note(main spec for slides) > regress ..., robust` — attaches a note in plain language (easy to find later)
+- `llm push, req(interpret the coefficients) > regress ...` — sends a request for Claude along with the result. In the conversation with the push app open it arrives as "[push] 새 결과 #n — interpret the coefficients" and Claude does just that (it overrides the push app's 「요청」 box). Quotes are fine too: `req("coefficients as a table")`
 - `llm push, clear` — clears unread items and pushes fresh (cleanup)
 
 - `llm push` **stores** the result. A conversation with the push app open receives it right away and summarizes it (2-2b)
@@ -142,11 +143,12 @@ In Claude Code and Cowork you can see push results as a list and send the ones y
 - **"Open the push app"** or `/stata-push` — the push app opens in the side panel and this conversation starts receiving pushes
 - **"Close the push app"** or `/stata-push off` — this conversation stops receiving
 - **"Is push on?"** — tells you whether this conversation is receiving
+- The server tray icon menu **Open Push page** / **Open Variables page** also opens them in your browser (to look without Claude)
 
 **The 「Claude 에게」 (To Claude) box**
 
 - 「바로 정리」 (Summarize now) — Claude summarizes each new push right away / 「쌓아 두기」 (Keep) — pushes only pile up in the list and go to Claude when you press [Claude 에게 보내기] (Send to Claude)
-- 「요청」 (Request) — what to say along with a send (e.g. compare the two regressions in one table). 「요청 추가」 (Add request) on a card applies to that result only
+- 「요청」 (Request) — what to say along with a send (e.g. compare the two regressions in one table). 「요청 추가」 (Add request) on a card applies to that result only; a push sent with `llm push, req(…)` from Stata arrives with its request already filled in
 - 「보낸 뒤 지우기」 (Delete after sending) — results Claude has taken are removed from the list
 - 「여러 대화에서 받기」 (Receive in several conversations) — off (default): only the conversation that opened the push app last receives. On: every conversation that opened it receives
 
@@ -252,7 +254,7 @@ Start your session with `/stata-setup` — it checks the environment and working
 The rest, as needed:
 
 - `/stata-exec command` — run exactly as given, no edits or inference
-- `/stata-async command` — fire off long jobs (~30s+) and keep talking → collect on completion with `/stata-pull` (search with `history keyword`; reading preserves items)
+- `/stata-async command` — fire off long jobs (~30s+) and keep talking → on completion it arrives on its own in the conversation with the push app open, otherwise collect it with `/stata-pull` (search with `history keyword`; reading preserves items)
 - `/stata-pull` — fetch results you pushed from the Stata window with `llm push > command`
 - `/stata-help command` — check syntax. When Claude misuses an option, this corrects it (`xtreg` → `xtreg fe` → `xtreg fe.vce`, cascading)
 - `/stata-data-context` — resynchronize when Claude's picture of the data is stale (you changed the data in the Stata window). For a full profile use `/stata-data-fullcontext` (+ codebook)
