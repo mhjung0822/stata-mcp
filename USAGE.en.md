@@ -285,6 +285,8 @@ In Claude Code and Cowork you can see push results as a list and send the ones y
 - **"Is push on?"** — tells you whether this conversation is receiving
 - The server tray icon menu **Open Push page** / **Open Variables page** also opens them in your browser (to look without Claude)
 
+> **In Cowork, receiving goes to sleep when the conversation is idle.** After a few minutes (2–3) with no message in the conversation that is receiving, it stops and the push app header shows 「받는 대화 없음」 (no receiving conversation). Pushes that arrive meanwhile are not lost: they are kept, and sending any message in that conversation brings them in right after the reply. Claude Code (the desktop Code tab) does not sleep — leave it on and pushes come in right away.
+
 **The 「Claude 에게」 (To Claude) box**
 
 - 「바로 정리」 (Summarize now) — Claude summarizes each new push right away / 「쌓아 두기」 (Keep) — pushes only pile up in the list and go to Claude when you press [Claude 에게 보내기] (Send to Claude)
@@ -300,7 +302,6 @@ In Claude Code and Cowork you can see push results as a list and send the ones y
 - Click a card's header to expand or collapse · notes · search · filters (all · unread · async · sent)
 - [저장] (Save) · [불러오기] (Load) — as `push_*.json` in Stata's working folder
 - Results that arrive while Claude is answering come in right after the answer ends
-- In Cowork, receiving pauses after the conversation has been idle for a few minutes; pushes that arrive meanwhile are kept and come in when you next write
 
 While you work with the variable window open, a new push shows a notice at its top.
 
