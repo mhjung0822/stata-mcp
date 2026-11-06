@@ -83,16 +83,6 @@ One package for both Mac and Windows. It works in cowork and in the Claude Code 
 3. **Install** the **Stata MCP** entry that appears → click **Continue** in the "local MCP server" dialog
 4. Turn on **Auto-update** on the marketplace entry so new versions arrive on their own
 
-In a Claude Code terminal, these two lines do the same:
-
-```bash
-claude plugin marketplace add mhjung0822/stata-mcp
-```
-
-```bash
-claude plugin install stata-mcp@stata-mcp
-```
-
 **Method B — upload the file** (offline, or when method A is not offered)
 
 1. [Download `stata-mcp.plugin`](https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/claude-plugins/stata-mcp.plugin)
@@ -186,7 +176,6 @@ Instead of Claude, you can connect the ChatGPT desktop app to the same Stata. No
 4. In a new chat, type `What Stata version am I running?` — if the version comes back, you are connected.
 
 > Screenshots are from the Korean UI on Mac; button positions are the same. The server from step 3 (`mcp_connect`) must be running for the tools to work. If you changed the port (see section 2), use that port instead of `8080` in the URL. The skill pack in 4-2 is for Claude.
-
 
 ---
 

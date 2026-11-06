@@ -70,7 +70,7 @@ Stata 19.5 MP (8 core) · macOS · 작업폴더 /Users/…
 
 ### 2-4. 작업폴더
 
-`/stata-setup` 은 Stata 작업폴더가 코워크 폴더와 다르면 바꿀지 묻습니다. 그 뒤에도 Stata 에서 `cd` 로 작업폴더를 옮기면 Claude 가 자동으로 알아차려, 되돌릴지 새 폴더를 유지할지 안내합니다. 작업 지침(`stata-instruction`)에 처리 방식을 적어두면 매번 자동 응대합니다.
+`/stata-setup` 은 Stata 작업폴더가 코워크 폴더와 다르면 바꿀지 묻습니다. 그 뒤에도 Stata 에서 `cd` 로 작업폴더를 옮기면 Claude 가 자동으로 알아차려, 되돌릴지 새 폴더를 유지할지 안내합니다. 작업 지침(CLAUDE.md 등)에 처리 방식을 적어두면 매번 자동 응대합니다.
 
 > 연결이 안 되면 9장 문제 해결을 보세요.
 
@@ -151,7 +151,7 @@ Claude 가 Stata 명령을 헷갈릴 때 스스로 확인하는 도구들 — �
 - `/stata-push` — push 앱(베타) 열기 + 이 대화에서 받기 (`/stata-push off` 로 끔, 7-3)
 - `/stata-workflow [절차]` — 워크플로(베타) 시작. 패널 분석·패널 데이터 생성을 단계별 질문으로 진행해 보고서까지 (6장)
 
-작업 지침(`stata-instruction`)은 직접 편집해 출력형식·분석 규칙을 바꿀 수 있습니다. 패널 병합은 "웨이브 합쳐줘" 같은 자연어로.
+출력형식·분석 규칙 같은 선호는 작업 폴더의 CLAUDE.md(코워크·Claude Code)나 프로젝트 지침(채팅)에 적어 두면 Claude 가 그대로 따릅니다. 지침 예시 스킬 [`stata-instruction.zip`](https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/claude-plugins/stata-instruction.zip) 을 내려받아 고친 뒤 스킬로 올리면(채팅·코워크: 스킬 업로드 / Claude Code: `~/.claude/skills/stata-instruction/`) `/stata-setup` 이 그것을 읽습니다. 패널 병합은 "웨이브 합쳐줘" 같은 자연어로.
 
 **자연어 vs 스킬 — 같은 작업, 두 방식**
 

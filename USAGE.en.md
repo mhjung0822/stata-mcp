@@ -70,7 +70,7 @@ The first time you use a new MCP server, an **approval prompt** appears (`Trust 
 
 ### 2-4. Working folder
 
-`/stata-setup` asks whether to switch Stata's working folder when it differs from the Cowork folder. After that, if you move the working folder with `cd` in Stata, Claude notices automatically and asks whether to revert or keep the new folder. Write your preferred handling into the working instructions (`stata-instruction`) and it is applied automatically every time.
+`/stata-setup` asks whether to switch Stata's working folder when it differs from the Cowork folder. After that, if you move the working folder with `cd` in Stata, Claude notices automatically and asks whether to revert or keep the new folder. Write your preferred handling into your working instructions (CLAUDE.md etc.) and it is applied automatically every time.
 
 > If it does not connect, see chapter 9, Troubleshooting.
 
@@ -151,7 +151,7 @@ The rest, as needed:
 - `/stata-push` — open the push app (beta) + receive in this conversation (`/stata-push off` to stop, 7-3)
 - `/stata-workflow [procedure]` — start a workflow (beta): panel analysis or panel data build, step-by-step questions through to the report (chapter 6)
 
-The working instructions (`stata-instruction`) can be edited to change output formats and analysis rules. Panel merging responds to plain language like "merge the waves".
+Preferences such as output format and analysis rules go into the working folder's CLAUDE.md (Cowork, Claude Code) or the project instructions (chat), and Claude follows them. For a starting point, download the example skill [`stata-instruction-en.zip`](https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/claude-plugins/stata-instruction-en.zip), edit it and add it as a skill (chat/Cowork: skill upload; Claude Code: `~/.claude/skills/stata-instruction/`) — `/stata-setup` then loads it. Panel merging responds to plain language like "merge the waves".
 
 **Natural language vs skills — same job, two styles**
 

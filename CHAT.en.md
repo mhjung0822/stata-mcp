@@ -31,6 +31,7 @@ The **chat** surface of Claude Desktop does not use plugins. To use the Stata to
 2. **Unzip it** — you get 12 per-skill zips
 3. Claude Desktop → **Settings → Skills** → Upload → upload the extracted **per-skill zips** (do not upload the bundle zip itself)
 4. Upload once and it applies automatically to every device on the same account
+5. (optional) To keep working instructions (output format, depth of interpretation) as a skill, download [`stata-instruction-en.zip`](https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/claude-plugins/stata-instruction-en.zip), edit its `SKILL.md` and upload it the same way — it is not part of the bundle, so updates never overwrite it
 
 > A Korean edition also exists (`stata-skills-all.zip`). The skills share names across the two packs, so install only one language pack per account.
 

@@ -17,7 +17,7 @@ description: |
    - options: ["네", "아니오"]
    - "네" 선택 시: `executeStata("cd \"<마운트경로>\"")` 실행 → 결과만 알림 (추가 질문 없이)
    - "아니오" → 현재 pwd 유지
-4. `stata-instruction` 스킬이 설치돼 있으면 Skill 도구로 호출해 세션 작업 지침을 로드 (별도 설치·사용자 편집용 — 없으면 이 단계 스킵하고 기본 형식으로 진행)
+4. `stata-instruction` 스킬이 설치돼 있으면 Skill 도구로 호출해 세션 작업 지침을 로드 (사용자가 직접 둔 스킬 — 없으면 이 단계를 건너뛰고, CLAUDE.md 등 사용자 지침이 있으면 그것을 따른다)
 5. 변수 창 — AskUserQuestion:
    - question: "변수 창을 열까요?"
    - options: ["네", "아니오"]

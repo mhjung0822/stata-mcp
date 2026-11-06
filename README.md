@@ -86,16 +86,6 @@ Mac·Windows 공용입니다. 코워크와 Claude Code 탭에서 쓸 수 있습�
 3. 목록에 나온 **Stata MCP** 를 **설치** → "로컬 MCP 서버" 안내 창에서 **계속**
 4. 마켓플레이스 항목에서 **자동 업데이트** 를 켜 두면 새 버전이 나올 때 알아서 받습니다
 
-Claude Code 터미널에서는 아래 두 줄로 같은 결과입니다.
-
-```bash
-claude plugin marketplace add mhjung0822/stata-mcp
-```
-
-```bash
-claude plugin install stata-mcp@stata-mcp
-```
-
 **방법 B — 파일 업로드** (오프라인·방법 A 가 안 보이는 환경)
 
 1. [`stata-mcp.plugin` 다운로드](https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/claude-plugins/stata-mcp.plugin)
@@ -189,7 +179,6 @@ Claude 대신 ChatGPT 데스크톱 앱에서도 같은 Stata 에 연결할 수 �
 4. 새 대화에서 `Stata 버전 알려줘` 를 입력해 버전이 답으로 오면 연결 완료입니다.
 
 > 화면은 Mac 기준입니다. 3장의 `mcp_connect` 로 서버를 먼저 띄워 두어야 도구가 동작합니다. 포트를 바꿨다면(2장 참고) URL 의 `8080` 을 바꾼 포트로 입력하세요. 4-2장의 스킬 묶음은 Claude 용입니다.
-
 
 ---
 
