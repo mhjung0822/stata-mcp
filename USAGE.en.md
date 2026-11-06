@@ -295,10 +295,12 @@ In Claude Code and Cowork you can see push results as a list and send the ones y
 **The list**
 
 - Colors: blue = latest, gray = not sent, orange = sent
+- Badge 「끈 사이 도착」 (arrived while off) = came in while no conversation was receiving; it is not sent on its own — press [보내기] (Send) if you want it. 「지연 도착」 (arrived late) = came in while the server was down (same handling)
 - 「받는 대화」 (Receiving) in the header — how many conversations are receiving now. With 「없음」 (none), sent results wait until a conversation runs `/stata-push`
 - Click a card's header to expand or collapse · notes · search · filters (all · unread · async · sent)
 - [저장] (Save) · [불러오기] (Load) — as `push_*.json` in Stata's working folder
 - Results that arrive while Claude is answering come in right after the answer ends
+- In Cowork, receiving pauses after the conversation has been idle for a few minutes; pushes that arrive meanwhile are kept and come in when you next write
 
 While you work with the variable window open, a new push shows a notice at its top.
 
