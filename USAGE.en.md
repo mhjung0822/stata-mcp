@@ -125,7 +125,7 @@ Tools Claude uses to check Stata syntax on its own — you rarely call them your
 "Details on the vce option of xtreg fe"      → getHelp("xtreg","fe.vce") — just that option's detail (cascading drill-down)
 "What command is su again?"                  → abbreviations resolved automatically (su→summarize, standard Stata rules)
 "Find commands about cluster-robust errors"  → local keyword search → candidate commands + one-line descriptions
-"Show the Stata environment/version"         → getStataEnv — 8 essentials: version, edition (BE/SE/MP), OS, install paths
+"Show the Stata environment/version"         → getStataEnv — version, edition (BE/SE/MP), OS
 ```
 
 - Help comes from an ontology DB (4,464 nodes) that returns **only the slice you need, cascading down** — the default call is an overview (a few hundred tokens); use a `selector` to descend to a model (`fe`), option group (`fe.se`), option detail (`fe.vce`), `examples`, `stored`, `post.predict`, etc. An invalid selector returns the list of valid selectors for that command. See the `/stata-help` skill for the full syntax

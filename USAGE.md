@@ -125,7 +125,7 @@ Claude 가 Stata 명령을 헷갈릴 때 스스로 확인하는 도구들 — �
 "xtreg fe 의 vce 옵션 자세히"           → getHelp("xtreg","fe.vce") — 그 옵션 상세만 (계단식 하강)
 "su 가 무슨 명령이더라"                 → 약어 자동 해석 (su→summarize, Stata 규칙 그대로)
 "클러스터 로버스트 관련 명령 찾아줘"      → 로컬 키워드 검색 → 관련 명령 후보 + 한줄설명
-"Stata 환경/버전 알려줘"               → getStataEnv — 버전·에디션(BE/SE/MP)·OS·설치경로 핵심 8항목
+"Stata 환경/버전 알려줘"               → getStataEnv — 버전·에디션(BE/SE/MP)·OS
 ```
 
 - 도움말은 온톨로지 DB(노드 4,464개)에서 **필요한 slice 만 계단식 반환** — 기본 호출은 개요(수백 토큰), `selector` 로 모델(`fe`)/옵션그룹(`fe.se`)/옵션상세(`fe.vce`)/`examples`/`stored`/`post.predict` 등 하강. 잘못된 selector 는 그 명령의 유효 selector 목록을 돌려줌. 자세한 문법은 `/stata-help` 스킬 참고

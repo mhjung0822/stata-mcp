@@ -26,7 +26,7 @@ description: |
    - Stata 자체 Variables 창(`window manage forward variables`)과 다른 것 — 그 명령은 쓰지 않는다
 
 1·2번 결과는 원문을 그대로 출력하지 않고 **한 줄 요약**으로만 보인다 — 예: `Stata 19.5 MP (8 core) · macOS · 작업폴더 /Users/…`.
-`adopath`·sysdir 목록·이론 한계값(max_N_theory 등)·byteorder 같은 항목은 화면에 쓰지 않는다 (툴 응답은 컨텍스트에 남으므로 세션 중 필요할 때 참조만). 3번(마운트 확인)·4번(지침 로드)·5번(변수 창)은 정의된 동작을 수행한다.
+`getStataEnv` 는 버전·에디션·OS 셋만 준다 (경로·한계값은 오지 않음 — sysdir 등이 필요하면 그때 `executeStata("sysdir")` 로 조회). 3번(마운트 확인)·4번(지침 로드)·5번(변수 창)은 정의된 동작을 수행한다.
 
 ## 도구 지침 요약 (v0.12.30) — 이 세션 내내 기억할 것
 
