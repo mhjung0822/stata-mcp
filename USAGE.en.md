@@ -101,11 +101,11 @@ For slow commands like bootstrap / simulate / mi impute, Claude uses `executeSta
 ```
 Run a 300,000-rep bootstrap → (immediately) "Started. Feel free to do other things while it runs."
    ... chat freely in the meantime (model questions, writing, planning the next analysis) ...
-Done → a conversation with the push app open gets it on its own and summarizes it (otherwise "show me the results") → table + interpretation
+Done → a conversation with the push app open (Code tab) gets it on its own and summarizes it (otherwise "show me the results") → table + interpretation
 ```
 
 - Other Stata commands during the run get an immediate `busy` response (no waiting, chat never blocks)
-- The completed result (full output + `rc` + elapsed time) goes to the push store — a conversation with the push app open (7-3) receives it as "[push] 새 결과" as soon as it finishes and summarizes it; otherwise say "check the push results" or use `/stata-pull`
+- The completed result (full output + `rc` + elapsed time) goes to the push store — a conversation with the push app open (Code tab, 7-3) receives it as "[push] 새 결과" as soon as it finishes and summarizes it; otherwise say "check the push results" or use `/stata-pull`
 - Stored r()/e() results are preserved exactly as in a normal run (query with `getMacro("e(b)")` etc.)
 - One job at a time (the Stata engine is single-threaded)
 
@@ -252,7 +252,7 @@ Variants:
 - `llm push, req(interpret the coefficients) > regress ...` — sends a request for Claude along with the result. In the conversation with the push app open it arrives as "[push] 새 결과 #n — interpret the coefficients" and Claude does just that (it overrides the push app's 「요청」 box). Quotes are fine too: `req("coefficients as a table")`
 - `llm push, clear` — clears unread items and pushes fresh (cleanup)
 
-- `llm push` **stores** the result. A conversation with the push app open receives it right away and summarizes it (7-3)
+- `llm push` **stores** the result. A conversation with the push app open (Code tab) receives it right away and summarizes it (7-3)
 - Claude picks up unread items one by one — push several times in a row and they accumulate in order
 
 ### 7-2. The push store — reading does not delete
@@ -274,7 +274,7 @@ Retrieved results are not deleted, only **marked as read**. Everything is kept f
 
 ### 7-3. The push app window — collect results and send them to Claude (beta)
 
-In Claude Code and Cowork you can see push results as a list and send the ones you pick to Claude.
+You can see push results as a list and send the ones you pick to Claude. New results arrive in the conversation **on their own only in Claude Code (the desktop Code tab)**.
 
 <img src="images/push-app-cowork.png" alt="Claude Desktop — in the chat in the middle, a new push (#8) delivered from the push app and Claude's summary; the push app in the browser panel on the right (one receiving conversation, Summarize now, the list)" width="900">
 
@@ -285,7 +285,9 @@ In Claude Code and Cowork you can see push results as a list and send the ones y
 - **"Is push on?"** — tells you whether this conversation is receiving
 - The server tray icon menu **Open Push page** / **Open Variables page** also opens them in your browser (to look without Claude)
 
-> **In Cowork, receiving goes to sleep when the conversation is idle.** After a few minutes (2–3) with no message in the conversation that is receiving, it stops and the push app header shows 「받는 대화 없음」 (no receiving conversation). Pushes that arrive meanwhile are not lost: they are kept, and sending any message in that conversation brings them in right after the reply. Claude Code (the desktop Code tab) does not sleep — leave it on and pushes come in right away.
+> **In chat and Cowork, results do not arrive on their own.** They are kept in the store — ask **"get the push results"** or **"summarize push #3"** in the conversation and Claude fetches and summarizes them.
+>
+> **To receive automatically in the Code tab**, if you installed the plugin by upload, upload `stata-mcp-push.plugin` as well (a marketplace install already includes it).
 
 **The 「Claude 에게」 (To Claude) box**
 
@@ -305,7 +307,7 @@ In Claude Code and Cowork you can see push results as a list and send the ones y
 
 While you work with the variable window open, a new push shows a notice at its top.
 
-In the chat tab, say "show me the push results" to fetch them.
+In chat and Cowork, say "get the push results" to fetch them.
 
 ---
 
