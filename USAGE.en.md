@@ -276,6 +276,11 @@ Retrieved results are not deleted, only **marked as read**. Everything is kept f
 
 You can see push results as a list and send the ones you pick to Claude. New results arrive in the conversation **on their own only in Claude Code (the desktop Code tab)**.
 
+| Where | Install | Turn on | When a new result arrives | What you do |
+|---|---|---|---|---|
+| **Chat · Cowork** | The plugin | Not needed | Kept in the store | "get the push results" / "summarize push #3" |
+| **Code tab** | The plugin + `stata-mcp-push.plugin` (already included in a marketplace install) | "Open the push app" | Arrives in the conversation and Claude summarizes it | Nothing |
+
 <img src="images/push-app-cowork.png" alt="Claude Desktop — in the chat in the middle, a new push (#8) delivered from the push app and Claude's summary; the push app in the browser panel on the right (one receiving conversation, Summarize now, the list)" width="900">
 
 **Open / close**
