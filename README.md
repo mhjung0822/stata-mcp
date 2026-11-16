@@ -1,5 +1,10 @@
 # Stata MCP — Stata × Claude · ChatGPT
 
+> **이 브랜치(`java`)는 Java 서버 판(v0.13.7 — 서버·드론 0.13.5)의 보관본입니다.** 더 고치지 않습니다. 최신 판은 [main](https://github.com/mhjung0822/stata-mcp) 을 쓰세요.
+> 이 판은 실행 파일을 쓸 수 없는 PC 를 위한 것입니다 — Stata 만 있으면 됩니다.
+> Stata 를 켤 때 뜨는 새 버전 알림은 설정 파일 `stata_mcp.properties` 에 `UPDATE_CHECK=off` 한 줄을 넣으면 꺼집니다.
+
+
 > **English summary** — Stata MCP is an **AI assistant for Stata**: an MCP (Model Context Protocol) server that connects **Stata** with **Claude** and **ChatGPT**.
 > Ask for an analysis in chat and it runs in your own Stata on the same data — regressions, data management, graphs, do-files; send results you ran yourself back to the AI to interpret and continue.
 > You keep using Stata as usual and bring in the AI only when you need it. Requires Stata 17+ (19 recommended) and Claude Desktop.
@@ -32,7 +37,7 @@ ChatGPT 데스크톱 앱에서도 연결할 수 있습니다 — 6장 참고.
 Stata 에서 한 줄:
 
 ```stata
-net install stata-mcp, from("https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/release") replace
+net install stata-mcp, from("https://raw.githubusercontent.com/mhjung0822/stata-mcp/java/release") replace
 ```
 
 jar 2종 + ado/dlg 가 자동 다운로드됩니다. 설치는 이게 전부입니다 — 도움말 DB(~32MB)는 다음 장의 `mcp_connect` 가 처음 연결할 때 받을지 물어봅니다 (y 권장, 인터넷 연결 필요).

@@ -1,5 +1,10 @@
 # Stata MCP — Stata × Claude · ChatGPT
 
+> **This branch (`java`) is the archived Java-server edition (v0.13.7 — server and drone 0.13.5).** It is no longer updated. For the current edition use [main](https://github.com/mhjung0822/stata-mcp).
+> It is kept for PCs that cannot run the server executable — it needs nothing but Stata.
+> To silence the new-version notice shown when Stata starts, add the line `UPDATE_CHECK=off` to the settings file `stata_mcp.properties`.
+
+
 > 한국어: [README.md](README.md)
 
 Stata MCP lets Claude and ChatGPT **work with you in Stata (Results window, Data Browser, graphs, and so on), on the same data**. You **exchange analysis commands and results** back and forth: ask for an analysis in chat and it runs right in your Stata, or send results you ran yourself in Stata to the AI to interpret and carry on from there. While connected, you can still use Stata on your own as usual and bring in the AI only when you need it.
@@ -29,7 +34,7 @@ For usage and troubleshooting after install see [USAGE.en.md](USAGE.en.md).
 One line in Stata:
 
 ```stata
-net install stata-mcp, from("https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/release") replace
+net install stata-mcp, from("https://raw.githubusercontent.com/mhjung0822/stata-mcp/java/release") replace
 ```
 
 This downloads the two jars plus the ado/dlg files. That is the whole install — the help DB (~32MB) is offered by `mcp_connect` (next section) on first connect (answer y; internet connection required).

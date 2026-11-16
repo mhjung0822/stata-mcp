@@ -46,7 +46,7 @@ java -version  # 17+ 필요
 **당신은 Stata 를 직접 못 조작합니다.** 아래를 제시하고 사용자가 Stata 명령창에 붙여넣게 하세요:
 
 ```stata
-net install stata-mcp, from("https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/release") replace
+net install stata-mcp, from("https://raw.githubusercontent.com/mhjung0822/stata-mcp/java/release") replace
 mcp_setup
 mcp_connect
 ```
