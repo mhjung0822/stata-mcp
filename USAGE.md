@@ -16,7 +16,7 @@
 3. 코워크 모드 토글 ON
 ```
 
-이후 채팅에서 Stata 작업을 요청하거나, Stata 에서 `llm push` 로 결과를 Claude 로 보냅니다.
+Stata 와 Claude 는 어느 쪽을 먼저 켜도 됩니다. 이후 채팅에서 Stata 작업을 요청하거나, Stata 에서 `llm push` 로 결과를 Claude 로 보냅니다.
 
 ### 1-2. 완전 종료 (서버 + 드론)
 
@@ -24,21 +24,21 @@
 mcp_connect, shutdown
 ```
 
-이 Stata 의 연결을 끊습니다 (제어판 [Shutdown] 버튼과 동일). 연결된 Stata 가 더 없으면 서버도 1초 뒤 꺼집니다.
+이 Stata 의 연결을 끊습니다 (제어판 [Shutdown] 버튼과 동일). 연결된 Stata 도, 열려 있는 Claude 도 없으면 서버가 꺼집니다.
 
 ### 1-3. 자동 종료
 
-Stata 를 종료하면 서버도 1초 뒤(기본) 스스로 정리됩니다. Stata 를 여러 개 연결했다면 마지막 Stata 를 끌 때 꺼집니다. 제어판(8장)의 Auto-shutdown 그룹에서 끄거나(서버 상주) 대기 시간을 조절할 수 있고, 명령으로도 됩니다:
+연결된 Stata 와 Claude 가 모두 없어지면 서버가 1초 뒤(기본) 스스로 꺼집니다. Claude 가 열려 있는 동안은 Stata 를 껐다 켜도 서버가 그대로 있습니다. 제어판(8장)의 Auto-shutdown 그룹에서 끄거나(서버 상주) 대기 시간을 조절할 수 있고, 명령으로도 됩니다:
 
 ```stata
 mcp_watchdog, grace(120)
 mcp_watchdog, enabled(0)
 ```
 
-- `grace(120)` — Stata 종료 후 120초 뒤 서버 정리
-- `enabled(0)` — 자동 정리 끄기 (Stata 를 꺼도 서버 유지)
+- `grace(120)` — 꺼질 조건이 된 뒤 120초를 기다렸다가 서버 종료
+- `enabled(0)` — 자동 종료 끄기 (서버 유지)
 
-> 대기 시간을 늘려 두면, 그 안에 Stata 를 다시 켜고 연결할 때 서버가 끊기지 않고 그대로 이어집니다.
+> 꺼지는 기준은 설정 파일(8-4)의 `stata.mcp.watchdog.mode` 로 바꿀 수 있습니다 — `both`(기본: Stata 도 Claude 도 없을 때) · `stata`(Stata 가 없을 때) · `client`(Claude 가 없을 때).
 
 > 서버만 따로 내리려면 `mcp_server, stop` 도 가능합니다.
 
@@ -106,7 +106,7 @@ bootstrap/simulate/mi impute 같은 오래 걸리는 명령은 Claude 가 `execu
 
 - 실행 중 다른 Stata 명령은 즉시 `busy` 응답 (기다리며 채팅이 끊기지 않음)
 - 완료 결과(출력 전문 + `rc` + 소요시간)는 push 저장소에 쌓입니다 — push 앱을 연 대화(Code 탭, 7-3)는 끝나는 대로 「[push] 새 결과」로 받아 정리하고, 아니면 "push 결과 봐줘" 또는 `/stata-pull` 로 가져옵니다
-- r()/e() 저장 결과는 일반 실행과 동일하게 보존 (`getMacro("e(b)")` 등으로 조회)
+- r()/e() 저장 결과는 일반 실행과 동일하게 보존 (`getStored("e(b)")` 등으로 조회)
 - 한 번에 하나만 실행 (Stata 엔진이 단일이라서)
 
 ### 3-3. 그래프/저장 파일
@@ -125,7 +125,7 @@ Claude 가 Stata 명령을 헷갈릴 때 스스로 확인하는 도구들 — �
 "xtreg fe 의 vce 옵션 자세히"           → getHelp("xtreg","fe.vce") — 그 옵션 상세만 (계단식 하강)
 "su 가 무슨 명령이더라"                 → 약어 자동 해석 (su→summarize, Stata 규칙 그대로)
 "클러스터 로버스트 관련 명령 찾아줘"      → 로컬 키워드 검색 → 관련 명령 후보 + 한줄설명
-"Stata 환경/버전 알려줘"               → getStataEnv — 버전·에디션(BE/SE/MP)·OS
+"Stata 환경/버전 알려줘"               → getStataInfo — 버전·에디션(BE/SE/MP)·OS·작업폴더·관측 수
 ```
 
 - 도움말은 온톨로지 DB(노드 4,464개)에서 **필요한 slice 만 계단식 반환** — 기본 호출은 개요(수백 토큰), `selector` 로 모델(`fe`)/옵션그룹(`fe.se`)/옵션상세(`fe.vce`)/`examples`/`stored`/`post.predict` 등 하강. 잘못된 selector 는 그 명령의 유효 selector 목록을 돌려줌. 자세한 문법은 `/stata-help` 스킬 참고
@@ -146,9 +146,9 @@ Claude 가 Stata 명령을 헷갈릴 때 스스로 확인하는 도구들 — �
 - `/stata-pull` — Stata 창에서 `llm push > 명령` 한 결과 가져오기
 - `/stata-help 명령` — 문법 확인. Claude 가 옵션을 잘못 쓰면 이걸로 교정 (`xtreg` → `xtreg fe` → `xtreg fe.vce` 계단식)
 - `/stata-data-context` — Claude 가 데이터를 잘못 알고 있을 때 (Stata 창에서 데이터를 바꾼 경우) 재동기화. 상세 파악은 `/stata-data-fullcontext` (+ codebook)
-- `/stata-graph-export` — 그래프를 PNG 파일로 작업폴더에 저장 / `/stata-graph-get` — 그래프 spec 조회
+- `/stata-graph-export` — 그래프를 PNG 파일로 작업폴더에 저장
 - `/stata-vars` — 변수 창 열기. 변수 이름·라벨·값라벨을 보면서 체크하거나 모형식을 적어 두면, "선택한 변수로 …" "모형 돌려 줘" 라고만 해도 Claude 가 그 변수·식을 씁니다 (`/stata-setup` 이 열지 물어봄)
-- `/stata-push` — push 앱(베타) 열기 + 이 대화에서 받기 (`/stata-push off` 로 끔, 7-3)
+- `/stata-push` — push 앱(베타) 열기. `/stata-push on` = 열고 이 대화에서 자동으로 받기, `/stata-push off` = 자동 받기 끄기 (7-3)
 - `/stata-workflow [절차]` — 워크플로(베타) 시작. 패널 분석·패널 데이터 생성을 단계별 질문으로 진행해 보고서까지 (6장)
 
 출력형식·분석 규칙 같은 선호는 작업 폴더의 CLAUDE.md(코워크·Claude Code)나 프로젝트 지침(채팅)에 적어 두면 Claude 가 그대로 따릅니다. 지침 예시 스킬 [`stata-instruction.zip`](https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/claude-plugins/stata-instruction.zip) 을 내려받아 고친 뒤 스킬로 올리면(채팅·코워크: 스킬 업로드 / Claude Code: `~/.claude/skills/stata-instruction/`) `/stata-setup` 이 그것을 읽습니다. 패널 병합은 "웨이브 합쳐줘" 같은 자연어로.
@@ -274,28 +274,29 @@ llm push
 
 ### 7-3. push 앱 화면 — 결과를 모아 보고 Claude 에게 보내기 (베타)
 
-push 결과를 목록으로 보고, 골라서 Claude 에게 보낼 수 있습니다. 새 결과를 대화로 **저절로 받는 것은 Claude Code(데스크톱 Code 탭)에서만** 됩니다.
+push 결과를 목록으로 보고, 골라서 Claude 에게 보낼 수 있습니다. 새 결과를 대화로 **저절로 받으려면 「자동 받기」를 켭니다** (기본은 꺼져 있습니다).
 
-| 화면 | 설치 | 켜기 | 새 결과가 오면 | 할 일 |
-|---|---|---|---|---|
-| **채팅·코워크** | 플러그인 | 필요 없음 | 저장소에 쌓임 | "push 결과 가져와" / "push #3 정리해 줘" |
-| **Code 탭** | 플러그인 + `stata-mcp-push.plugin` (마켓플레이스 설치면 이미 포함) | "푸쉬앱 열어 줘" | 대화로 저절로 들어오고 Claude 가 정리 | 없음 |
+| 「자동 받기」 | 새 결과가 오면 | 할 일 |
+|---|---|---|
+| **꺼짐** (기본) | 목록에 쌓임 | "push 결과 가져와" / "push #3 정리해 줘" |
+| **켜짐** — Code 탭 | 대화로 저절로 들어오고 Claude 가 정리 | 없음 |
+| **켜짐** — 코워크·채팅 | 대화로 저절로 들어오고 Claude 가 정리. 대화를 몇 분 쉬면 멈췄다가, 다시 말을 걸 때 그동안 온 것을 받습니다 | 없음 |
 
 <img src="images/push-app-cowork.png" alt="Claude 데스크톱 — 가운데 대화에 push 앱에서 넘어온 「[push] 새 결과 #8」 과 Claude 의 정리, 오른쪽 브라우저 패널의 push 앱(받는 대화 1 · 바로 정리 · 목록)" width="900">
 
 **열기·끄기**
 
-- **"푸쉬앱 열어 줘"** 또는 `/stata-push` — 옆 패널에 push 앱이 열리고, 이 대화가 push 를 받기 시작합니다
-- **"푸쉬앱 꺼 줘"** 또는 `/stata-push off` — 이 대화는 더 받지 않습니다
-- **"push 켜져 있어?"** — 이 대화가 받고 있는지 알려 줍니다
+- **"푸쉬앱 열어 줘"** 또는 `/stata-push` — 옆 패널에 push 앱이 열립니다 (자동 받기는 지금 상태 그대로)
+- **"푸쉬앱 켜 줘"** 또는 `/stata-push on` — push 앱을 열고 「자동 받기」를 켭니다. 이 대화가 push 를 받기 시작합니다
+- **"푸쉬앱 꺼 줘"** 또는 `/stata-push off` — 「자동 받기」를 끕니다. 이후 결과는 목록에만 쌓입니다
+- push 앱 화면의 **「자동 받기」** 스위치로도 켜고 끕니다. 화면에서 켠 뒤에는 받을 대화에서 "푸쉬앱 켜 줘" 를 한 번 해야 그 대화가 받기 시작합니다
 - 서버 트레이 아이콘 메뉴 **Open Push page** / **Open Variables page** 로도 브라우저에서 열 수 있습니다 (Claude 없이 보기만 할 때)
 
-> **채팅·코워크에서는 저절로 들어오지 않습니다.** 결과는 저장소에 쌓여 있으니 대화에서 **"push 결과 가져와"**, **"push #3 정리해 줘"** 처럼 요청하면 가져와 정리합니다.
->
-> **Code 탭에서 저절로 받으려면** 플러그인을 업로드로 설치한 경우 `stata-mcp-push.plugin` 도 함께 올려 두세요 (마켓플레이스로 설치했다면 이미 들어 있습니다).
+> **코워크·채팅에서 자동으로 받을 때**는 "새 결과가 있다"는 신호가 외부 중계 서버를 거쳐 전달됩니다. 결과 내용은 중계를 지나지 않고 이 PC 에서 직접 가져옵니다. 중계를 쓰지 않으려면 설정 파일(8-4)에 `PUSH_RELAY=off` — 이 경우 코워크·채팅에서는 "push 결과 가져와" 로 받습니다.
 
 **「Claude 에게」 상자**
 
+- 아래 항목들은 「자동 받기」가 켜져 있을 때 동작합니다
 - 「바로 정리」 — 새 push 가 오면 Claude 가 바로 정리합니다 / 「쌓아 두기」 — 목록에만 쌓고 [Claude 에게 보내기] 를 누를 때 갑니다
 - 「요청」 — 보낼 때 함께 전할 말 (예: 두 회귀 계수를 비교표로 정리해 줘). 카드의 「요청 추가」로 그 결과에만 따로 적을 수 있고, Stata 에서 `llm push, req(…)` 로 보내면 그 요청이 미리 적혀 옵니다
 - 「보낸 뒤 지우기」 — Claude 가 가져간 결과를 목록에서 지웁니다
@@ -305,14 +306,12 @@ push 결과를 목록으로 보고, 골라서 Claude 에게 보낼 수 있습니
 
 - 색: 파랑 = 최신, 회색 = 안 보냄, 주황 = 보냄
 - 배지 「끈 사이 도착」 = 받는 대화가 없을 때 온 결과. 자동으로 보내지 않으니 필요하면 [보내기]. 「지연 도착」 = 서버가 꺼져 있던 사이의 결과(마찬가지)
-- 머리줄 「받는 대화」 — 지금 받는 대화 수. 「없음」이면 보낸 결과는 쌓여 있다가, 대화에서 `/stata-push` 하면 그 대화가 받습니다
+- 머리줄 「받는 대화」 — 지금 받는 대화 수. 「없음」이면 보낸 결과는 쌓여 있다가, 대화에서 `/stata-push on` 하면 그 대화가 받습니다
 - 카드 머리를 누르면 펼치기·접기 · 메모 · 검색 · 필터(전체·안 읽음·async·보냄)
 - [저장]·[불러오기] — Stata 작업폴더에 `push_*.json` 으로
 - Claude 가 답하는 중에 온 결과는 답이 끝난 뒤 이어서 들어옵니다
 
 변수 창을 보면서 작업할 때 새 push 가 오면 변수 창 위에 알림이 뜹니다.
-
-채팅·코워크에서는 "push 결과 가져와" 로 가져옵니다.
 
 ---
 
@@ -328,8 +327,8 @@ mcp_setup
 ```
 
 - `mcp` (= `db mcp`) — 제어판 다이얼로그
-- `mcp_setup` — 설정 메뉴 + 도움말 DB 다운로드 (기동/제거 링크)
-- `mcp_setup, update` — 최신 버전으로 재설치 (Stata 를 재시작한 뒤 연결하기 전에 실행, 설치 후 다시 재시작)
+- `mcp_setup` — 서버 프로그램·도움말 DB 받기 + 설정 메뉴 (기동/제거 링크)
+- `mcp_setup, update` — 최신 버전으로 재설치하고 서버 프로그램·도움말 DB 도 새 판이면 받음 (Stata 를 재시작한 뒤 연결하기 전에 실행, 설치 후 다시 재시작)
 - `mcp_setup, updatecheck(off)` — 연결 시 새 버전 확인·연결 횟수 집계 끄기 (`on` 으로 다시 켜기)
 
 > 메뉴바 등록(User ▸ Stata-MCP)은 `mcp_setup` 이 함께 처리합니다. 다음 실행에서
@@ -342,10 +341,21 @@ mcp_uninstall
 ```
 
 - `mcp_uninstall` — 미리보기 (삭제 안 함): 대상 목록 + confirm 링크 출력
-- `mcp_uninstall, confirm` — ado/dlg/jar + 메뉴 등록 삭제 (설정/지침 보존)
+- `mcp_uninstall, confirm` — ado/dlg/연결 모듈/서버 프로그램 + 메뉴 등록 삭제 (설정/지침 보존)
 - `mcp_uninstall, confirm all` — 설정/지침 데이터까지 삭제
 
 > 제어판(`db mcp`)의 **Uninstall** 버튼으로도 미리보기(위 첫 줄)가 실행됩니다.
+
+### 8-4. 설정 파일
+
+홈 폴더의 `.stata_mcp/stata_mcp.properties` 에 한 줄씩 적습니다 (파일은 첫 기동 시 자동 생성). 바꾼 뒤에는 서버를 다시 켜야 반영됩니다 (`mcp_server, stop` 후 `mcp_connect`).
+
+| 설정 | 뜻 |
+|---|---|
+| `BRIDGE_PORT` / `DRONE_PORT` | 포트 (기본 8080 / 8001) |
+| `stata.mcp.watchdog.mode` | 서버가 스스로 꺼지는 기준 — `both`(기본) · `stata` · `client` (1-3) |
+| `DATA_TOOL=on` | Claude 가 데이터 값을 표 형태로 직접 읽는 도구(getData)를 켭니다. 기본은 꺼져 있습니다 |
+| `PUSH_RELAY=off` | 코워크·채팅에서 push 를 자동으로 받을 때 쓰는 외부 중계를 끕니다 (7-3) |
 
 ### 8-3. Stata 여러 개 쓰기 (고급)
 

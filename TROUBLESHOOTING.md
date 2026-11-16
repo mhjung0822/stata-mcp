@@ -31,9 +31,24 @@ Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform -All -
 
 ## 코워크에서 Stata 커넥터가 안 보일 때
 
-1. **Stata 쪽 서버가 떠 있는지 먼저** — Stata 에서 `mcp_connect` 실행 후 다시 시도
+1. **Stata 가 연결돼 있는지 먼저** — Stata 에서 `mcp_connect` 실행 후 다시 시도
 2. 로그인 직후에는 커넥터가 몇 분간 안 보일 수 있습니다 — 잠시 후 새 세션으로 재시도
 3. 그래도 안 보이면 Claude Desktop 을 완전히 종료(트레이 → Quit) 후 재실행
+
+## 서버 프로그램이 실행되지 않는 PC
+
+0.14.0 부터 MCP 서버는 별도의 실행 파일입니다. 보안 정책 등으로 이 파일을 실행할 수 없는 PC 에서는 이전 방식(0.13.x — Stata 만 있으면 동작)을 쓸 수 있습니다. 이전 방식은 더 고쳐지지 않습니다.
+
+Stata 에서:
+
+```stata
+net install stata-mcp, from("https://raw.githubusercontent.com/mhjung0822/stata-mcp/java/release") replace
+```
+
+- Claude 쪽 플러그인은 [이전 방식용 `stata-mcp.plugin`](https://raw.githubusercontent.com/mhjung0822/stata-mcp/java/claude-plugins/stata-mcp.plugin) 을 README 4-1 의 방법 B 로 올립니다
+- 이전 방식에서는 Stata 에서 `mcp_connect` 를 먼저 실행한 뒤 Claude 를 켭니다
+- Stata 를 켤 때 나오는 새 버전 안내는 `mcp_setup, updatecheck(off)` 로 끕니다
+- 사용법은 [이전 방식 문서](https://github.com/mhjung0822/stata-mcp/tree/java) 를 보세요
 
 ## 확장(mcpb)을 쓸 수 없는 환경 — 설정 파일 수동 등록
 

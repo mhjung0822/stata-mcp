@@ -26,29 +26,34 @@ For usage and troubleshooting after install see [USAGE.en.md](USAGE.en.md).
 
 ## 2. Stata-side install
 
-One line in Stata:
+Two lines in Stata:
 
 ```stata
 net install stata-mcp, from("https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/release") replace
 ```
 
-This downloads the two jars plus the ado/dlg files. That is the whole install — the help DB (~32MB) is offered by `mcp_connect` (next section) on first connect (answer y; internet connection required).
+```stata
+mcp_setup
+```
 
-To update later, **start Stata fresh and run these before connecting with `mcp_connect`**:
+- `net install …` — installs the Stata commands (ado) and the connection module
+- `mcp_setup` — downloads the server program and the help DB (~32MB) (internet connection required, once)
+
+To update later, **start Stata fresh and run this before connecting with `mcp_connect`**:
 
 ```stata
 mcp_setup, update
-mcp_setup, updatedb
 ```
 
-- `mcp_setup, update` — reinstalls the latest version. If it gives an error, run the install command above (`net install ...`) again
-- `mcp_setup, updatedb` — refreshes the help DB too (same as the control panel's [Update help DB] button)
+- `mcp_setup, update` — reinstalls the latest version and also fetches the server program and help DB when they have changed. If it gives an error, run the two install lines above again
 
 > To apply an update, **restart Stata again** and connect with `mcp_connect`.
 
 > The Claude extension (`.mcpb`) is updated separately. When a new version is out, download the file again from section 4-1 and install it the same way.
 
-> To change the ports (default 8080/8001), edit `BRIDGE_PORT`/`DRONE_PORT` in `stata_mcp.properties` next to the jar — the file is created automatically on first start.
+> To change the ports (default 8080/8001), edit `BRIDGE_PORT`/`DRONE_PORT` in `.stata_mcp/stata_mcp.properties` under your home folder — the file is created automatically on first start.
+
+> If your PC cannot run the server program, see "서버 프로그램이 실행되지 않는 PC" in [TROUBLESHOOTING.md](TROUBLESHOOTING.md) (Korean).
 
 ---
 
@@ -58,9 +63,9 @@ mcp_setup, updatedb
 mcp_connect
 ```
 
-Starts the MCP server and the drone in one go. On first run it offers the help-DB download — type `y` (recommended).
+Connects this Stata to Claude. You can start Stata and Claude in either order.
 
-> The server shuts down automatically when you quit Stata. You can also start it from the GUI control panel (`db mcp`) — see [USAGE.en.md](USAGE.en.md).
+> The server shuts down automatically once both Stata and Claude are closed. You can also start it from the GUI control panel (`db mcp`) — see [USAGE.en.md](USAGE.en.md).
 
 > On connect, Stata MCP checks once for a new version and shows a notice in the Results window if there is one (restart Stata, then run `mcp_setup, update` before connecting). Only the number of connections is counted, anonymously. To turn this off: `mcp_setup, updatecheck(off)`. Versions that are no longer supported won't connect and show a notice instead.
 
@@ -78,10 +83,10 @@ One package for both Mac and Windows. It works in cowork and in the Claude Code 
 
 **Method A — marketplace (register once, updates arrive by themselves)**
 
-1. In Claude Desktop, click your **name** at the bottom left → **Settings** → **Customize → Plugins**
-2. Click **+ Add** at the top right → **Add marketplace** → enter the GitHub address `mhjung0822/stata-mcp`
+1. In Claude Desktop, click **Plugins** in the left sidebar
+2. Click **Add** at the top right → **Add marketplace** → enter the GitHub address `mhjung0822/stata-mcp`
 3. **Install** the **Stata MCP** entry that appears → click **Continue** in the "local MCP server" dialog
-4. Turn on **Auto-update** on the marketplace entry so new versions arrive on their own
+4. Under **Add** → **Manage marketplaces**, turn on **Auto-update** so new versions arrive on their own
 
 **Method B — upload the file** (offline, or when method A is not offered)
 
@@ -89,13 +94,11 @@ One package for both Mac and Windows. It works in cowork and in the Claude Code 
 
    <img src="images/claude-plugin-1.png" alt="stata-mcp.plugin in the Downloads folder" width="640">
 
-2. In Claude Desktop, click your **name** at the bottom left → **Settings** → **Customize → Plugins** in the left list
+2. In Claude Desktop, click **Plugins** in the left sidebar
 
-   <img src="images/claude-plugin-2.png" alt="Settings - Plugins" width="640">
+3. Click **Add** at the top right → **Upload plugin**
 
-3. Click **+ Add** at the top right → **Upload plugin**
-
-   <img src="images/claude-plugin-3.png" alt="Add menu - Upload plugin" width="640">
+   <img src="images/claude-plugin-3.png" alt="Plugins screen - Upload plugin in the Add menu" width="640">
 
 4. **Drag** the downloaded file onto this screen, or pick it with Browse
 
@@ -109,11 +112,11 @@ One package for both Mac and Windows. It works in cowork and in the Claude Code 
 
    <img src="images/claude-plugin-6.png" alt="Local MCP server notice" width="640">
 
-7. Done when the **Stata MCP** page shows **Skills · 12** and **Connectors · 1** with the switch at the top right turned on
+7. Done when the **Stata MCP** page shows **Skills · 11** and **Connectors · 1** with the switch at the top right turned on
 
    <img src="images/claude-plugin-7.png" alt="Installed - Stata MCP plugin page" width="640">
 
-> Screenshots are from the Korean UI; button positions are the same. The server from step 3 (`mcp_connect`) must be running for the tools to work. Updates: method A is automatic (or **Update** on the marketplace entry); for method B upload the new `.plugin` file the same way. See [USAGE.en.md](USAGE.en.md) for the slash commands. In the Claude Code tab they carry the `stata-mcp:` prefix (e.g. `/stata-mcp:stata-exec`). The plugin ships the Korean skill texts; the English skill pack is in [CHAT.en.md](CHAT.en.md).
+> Screenshots are from the Korean UI; button positions are the same. Run `mcp_connect` (step 3) in Stata for the tools to work. Updates: method A is automatic (or **Update** on the marketplace entry); for method B upload the new `.plugin` file the same way. See [USAGE.en.md](USAGE.en.md) for the slash commands. In the Claude Code tab they carry the `stata-mcp:` prefix (e.g. `/stata-mcp:stata-exec`). The plugin ships the Korean skill texts; the English skill pack is in [CHAT.en.md](CHAT.en.md).
 
 ### 4-2. Also use it in chat (optional)
 
@@ -132,6 +135,8 @@ or **⌘Q** on Mac. Then start them in this order:
 2. Start Claude Desktop
 ```
 
+Either order works.
+
 Then, in a cowork session (or the Claude Code tab), type either of these:
 
 ```
@@ -147,7 +152,7 @@ If the version and edition come back (e.g. StataNow/MP 19.5), the installation i
 If not, check in order:
 
 1. Stata Results window — does the `mcp_connect` output say `Ready for commands`? (if not, see step 3, Start the server)
-2. Settings → Plugins — is **Stata MCP** switched on? (for chat: Settings → Extensions). If it is on but nothing works, fully quit and relaunch Claude Desktop
+2. **Plugins** in the left sidebar — is **Stata MCP** switched on? (for chat: Settings → Extensions). If it is on but nothing works, fully quit and relaunch Claude Desktop
 
 For everyday usage see [USAGE.en.md](USAGE.en.md) — startup order, control panel, push notifications, help lookup, troubleshooting. Rare environment issues: [TROUBLESHOOTING.md](TROUBLESHOOTING.md) (Korean).
 

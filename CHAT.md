@@ -23,12 +23,12 @@ Claude Desktop 의 **채팅** 화면은 플러그인을 쓰지 않습니다. 채
 
 5. Claude Desktop 재시작
 
-> 화면은 Mac 기준입니다. 서버(`mcp_connect`)를 먼저 띄워 두어야 도구가 동작합니다. 업데이트는 새 `.mcpb` 파일로 같은 방법으로 다시 설치.
+> 화면은 Mac 기준입니다. 채팅 화면은 Stata 에서 `mcp_connect` 를 **먼저** 실행해 두어야 도구가 동작합니다. 업데이트는 새 `.mcpb` 파일로 같은 방법으로 다시 설치.
 
 ## 2. 스킬 등록 (슬래시 명령)
 
 1. [`stata-skills-all.zip` 다운로드](https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/claude-plugins/chat/stata-skills-all.zip)
-2. 받은 zip 의 **압축을 풀면** 스킬별 zip 12개가 나옵니다
+2. 받은 zip 의 **압축을 풀면** 스킬별 zip 11개가 나옵니다
 3. Claude Desktop → **설정 → Skills** → 업로드 → 압축 푼 **스킬별 zip** 들을 업로드 (묶음 zip 을 그대로 올리지 마세요)
 4. 한 번 올리면 같은 계정의 모든 기기에 자동 적용됩니다
 5. (선택) 출력형식·해석 깊이 같은 작업 지침을 스킬로 두려면 [`stata-instruction.zip`](https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/claude-plugins/stata-instruction.zip) 을 내려받아 `SKILL.md` 를 고친 뒤 같은 방법으로 업로드 — 묶음에 들어 있지 않아 업데이트해도 덮이지 않습니다

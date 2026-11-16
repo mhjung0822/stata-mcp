@@ -23,12 +23,12 @@ The **chat** surface of Claude Desktop does not use plugins. To use the Stata to
 
 5. Restart Claude Desktop
 
-> Screenshots are from the Korean UI on Mac; button positions are the same. The server (`mcp_connect`) must be running for the tools to work. To update, install the new `.mcpb` file the same way.
+> Screenshots are from the Korean UI on Mac; button positions are the same. In the chat screen, run `mcp_connect` in Stata **first** for the tools to work. To update, install the new `.mcpb` file the same way.
 
 ## 2. Register the skills (slash commands)
 
 1. [Download `stata-skills-all-en.zip`](https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/claude-plugins/chat/stata-skills-all-en.zip)
-2. **Unzip it** — you get 12 per-skill zips
+2. **Unzip it** — you get 11 per-skill zips
 3. Claude Desktop → **Settings → Skills** → Upload → upload the extracted **per-skill zips** (do not upload the bundle zip itself)
 4. Upload once and it applies automatically to every device on the same account
 5. (optional) To keep working instructions (output format, depth of interpretation) as a skill, download [`stata-instruction-en.zip`](https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/claude-plugins/stata-instruction-en.zip), edit its `SKILL.md` and upload it the same way — it is not part of the bundle, so updates never overwrite it

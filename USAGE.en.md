@@ -16,7 +16,7 @@ For installation, see [README.en.md](README.en.md).
 3. Toggle cowork mode ON
 ```
 
-From there, ask for Stata work in the chat, or send results from Stata to Claude with `llm push`.
+You can start Stata and Claude in either order. From there, ask for Stata work in the chat, or send results from Stata to Claude with `llm push`.
 
 ### 1-2. Full shutdown (server + drone)
 
@@ -24,21 +24,21 @@ From there, ask for Stata work in the chat, or send results from Stata to Claude
 mcp_connect, shutdown
 ```
 
-Disconnects this Stata (same as the control panel's [Shutdown] button). If no other Stata is connected, the server also stops 1 second later.
+Disconnects this Stata (same as the control panel's [Shutdown] button). The server stops once no Stata is connected and no Claude is open.
 
 ### 1-3. Automatic shutdown
 
-When you quit Stata, the server cleans itself up 1 second later (default). If several Stata sessions are connected, it stops when you quit the last one. Use the control panel's Auto-shutdown group (chapter 8) to turn this off (keep the server running) or adjust the wait time, or use the command:
+Once no Stata is connected and no Claude is open, the server stops by itself 1 second later (default). While Claude stays open, the server keeps running even if you quit and restart Stata. Use the control panel's Auto-shutdown group (chapter 8) to turn this off (keep the server running) or adjust the wait time, or use the command:
 
 ```stata
 mcp_watchdog, grace(120)
 mcp_watchdog, enabled(0)
 ```
 
-- `grace(120)` — clean up the server 120 s after Stata quits
-- `enabled(0)` — disable auto-cleanup (server stays after Stata quits)
+- `grace(120)` — wait 120 s after the stop condition is met, then stop the server
+- `enabled(0)` — disable automatic shutdown (the server stays)
 
-> With a longer wait time, restarting Stata and reconnecting within it keeps the server running without dropping the connection.
+> The stop condition can be changed with `stata.mcp.watchdog.mode` in the settings file (8-4) — `both` (default: neither Stata nor Claude), `stata` (no Stata), `client` (no Claude).
 
 > To stop only the server, `mcp_server, stop` also works.
 
@@ -106,7 +106,7 @@ Done → a conversation with the push app open (Code tab) gets it on its own and
 
 - Other Stata commands during the run get an immediate `busy` response (no waiting, chat never blocks)
 - The completed result (full output + `rc` + elapsed time) goes to the push store — a conversation with the push app open (Code tab, 7-3) receives it as "[push] 새 결과" as soon as it finishes and summarizes it; otherwise say "check the push results" or use `/stata-pull`
-- Stored r()/e() results are preserved exactly as in a normal run (query with `getMacro("e(b)")` etc.)
+- Stored r()/e() results are preserved exactly as in a normal run (query with `getStored("e(b)")` etc.)
 - One job at a time (the Stata engine is single-threaded)
 
 ### 3-3. Graphs / saved files
@@ -125,7 +125,7 @@ Tools Claude uses to check Stata syntax on its own — you rarely call them your
 "Details on the vce option of xtreg fe"      → getHelp("xtreg","fe.vce") — just that option's detail (cascading drill-down)
 "What command is su again?"                  → abbreviations resolved automatically (su→summarize, standard Stata rules)
 "Find commands about cluster-robust errors"  → local keyword search → candidate commands + one-line descriptions
-"Show the Stata environment/version"         → getStataEnv — version, edition (BE/SE/MP), OS
+"Show the Stata environment/version"         → getStataInfo — version, edition (BE/SE/MP), OS, working folder, observations
 ```
 
 - Help comes from an ontology DB (4,464 nodes) that returns **only the slice you need, cascading down** — the default call is an overview (a few hundred tokens); use a `selector` to descend to a model (`fe`), option group (`fe.se`), option detail (`fe.vce`), `examples`, `stored`, `post.predict`, etc. An invalid selector returns the list of valid selectors for that command. See the `/stata-help` skill for the full syntax
@@ -146,9 +146,9 @@ The rest, as needed:
 - `/stata-pull` — fetch results you pushed from the Stata window with `llm push > command`
 - `/stata-help command` — check syntax. When Claude misuses an option, this corrects it (`xtreg` → `xtreg fe` → `xtreg fe.vce`, cascading)
 - `/stata-data-context` — resynchronize when Claude's picture of the data is stale (you changed the data in the Stata window). For a full profile use `/stata-data-fullcontext` (+ codebook)
-- `/stata-graph-export` — save the current graph as a PNG in the working folder / `/stata-graph-get` — inspect the graph spec
+- `/stata-graph-export` — save the current graph as a PNG in the working folder
 - `/stata-vars` — open the variable page. Browse names, labels and value labels, tick variables or write a model line, then just say "with the selected variables …" or "run the model" and Claude uses them (`/stata-setup` offers to open it)
-- `/stata-push` — open the push app (beta) + receive in this conversation (`/stata-push off` to stop, 7-3)
+- `/stata-push` — open the push app (beta). `/stata-push on` = open it and receive automatically in this conversation, `/stata-push off` = turn automatic receiving off (7-3)
 - `/stata-workflow [procedure]` — start a workflow (beta): panel analysis or panel data build, step-by-step questions through to the report (chapter 6)
 
 Preferences such as output format and analysis rules go into the working folder's CLAUDE.md (Cowork, Claude Code) or the project instructions (chat), and Claude follows them. For a starting point, download the example skill [`stata-instruction-en.zip`](https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/claude-plugins/stata-instruction-en.zip), edit it and add it as a skill (chat/Cowork: skill upload; Claude Code: `~/.claude/skills/stata-instruction/`) — `/stata-setup` then loads it. Panel merging responds to plain language like "merge the waves".
@@ -274,28 +274,29 @@ Retrieved results are not deleted, only **marked as read**. Everything is kept f
 
 ### 7-3. The push app window — collect results and send them to Claude (beta)
 
-You can see push results as a list and send the ones you pick to Claude. New results arrive in the conversation **on their own only in Claude Code (the desktop Code tab)**.
+You can see push results as a list and send the ones you pick to Claude. For new results to arrive in the conversation **on their own, turn on 「자동 받기」 (Auto-receive)** — it is off by default.
 
-| Where | Install | Turn on | When a new result arrives | What you do |
-|---|---|---|---|---|
-| **Chat · Cowork** | The plugin | Not needed | Kept in the store | "get the push results" / "summarize push #3" |
-| **Code tab** | The plugin + `stata-mcp-push.plugin` (already included in a marketplace install) | "Open the push app" | Arrives in the conversation and Claude summarizes it | Nothing |
+| 「자동 받기」 (Auto-receive) | When a new result arrives | What you do |
+|---|---|---|
+| **Off** (default) | Kept in the list | "get the push results" / "summarize push #3" |
+| **On** — Code tab | Arrives in the conversation and Claude summarizes it | Nothing |
+| **On** — Cowork · chat | Arrives in the conversation and Claude summarizes it. After the conversation has been idle for a few minutes it pauses, and picks up what came in when you next say something | Nothing |
 
 <img src="images/push-app-cowork.png" alt="Claude Desktop — in the chat in the middle, a new push (#8) delivered from the push app and Claude's summary; the push app in the browser panel on the right (one receiving conversation, Summarize now, the list)" width="900">
 
 **Open / close**
 
-- **"Open the push app"** or `/stata-push` — the push app opens in the side panel and this conversation starts receiving pushes
-- **"Close the push app"** or `/stata-push off` — this conversation stops receiving
-- **"Is push on?"** — tells you whether this conversation is receiving
+- **"Open the push app"** or `/stata-push` — the push app opens in the side panel (auto-receive stays as it is)
+- **"Turn the push app on"** or `/stata-push on` — opens the push app and turns 「자동 받기」 (Auto-receive) on; this conversation starts receiving pushes
+- **"Turn the push app off"** or `/stata-push off` — turns auto-receive off; results then only pile up in the list
+- The **「자동 받기」** switch in the push app does the same. After turning it on there, say "turn the push app on" once in the conversation that should receive
 - The server tray icon menu **Open Push page** / **Open Variables page** also opens them in your browser (to look without Claude)
 
-> **In chat and Cowork, results do not arrive on their own.** They are kept in the store — ask **"get the push results"** or **"summarize push #3"** in the conversation and Claude fetches and summarizes them.
->
-> **To receive automatically in the Code tab**, if you installed the plugin by upload, upload `stata-mcp-push.plugin` as well (a marketplace install already includes it).
+> **When receiving automatically in Cowork or chat**, the signal that "a new result exists" travels through an external relay server. The result itself does not pass through the relay — it is fetched directly from this PC. To avoid the relay, add `PUSH_RELAY=off` to the settings file (8-4); in Cowork and chat you then fetch results with "get the push results".
 
 **The 「Claude 에게」 (To Claude) box**
 
+- The items below apply while auto-receive is on
 - 「바로 정리」 (Summarize now) — Claude summarizes each new push right away / 「쌓아 두기」 (Keep) — pushes only pile up in the list and go to Claude when you press [Claude 에게 보내기] (Send to Claude)
 - 「요청」 (Request) — what to say along with a send (e.g. compare the two regressions in one table). 「요청 추가」 (Add request) on a card applies to that result only; a push sent with `llm push, req(…)` from Stata arrives with its request already filled in
 - 「보낸 뒤 지우기」 (Delete after sending) — results Claude has taken are removed from the list
@@ -305,14 +306,12 @@ You can see push results as a list and send the ones you pick to Claude. New res
 
 - Colors: blue = latest, gray = not sent, orange = sent
 - Badge 「끈 사이 도착」 (arrived while off) = came in while no conversation was receiving; it is not sent on its own — press [보내기] (Send) if you want it. 「지연 도착」 (arrived late) = came in while the server was down (same handling)
-- 「받는 대화」 (Receiving) in the header — how many conversations are receiving now. With 「없음」 (none), sent results wait until a conversation runs `/stata-push`
+- 「받는 대화」 (Receiving) in the header — how many conversations are receiving now. With 「없음」 (none), sent results wait until a conversation runs `/stata-push on`
 - Click a card's header to expand or collapse · notes · search · filters (all · unread · async · sent)
 - [저장] (Save) · [불러오기] (Load) — as `push_*.json` in Stata's working folder
 - Results that arrive while Claude is answering come in right after the answer ends
 
 While you work with the variable window open, a new push shows a notice at its top.
-
-In chat and Cowork, say "get the push results" to fetch them.
 
 ---
 
@@ -328,8 +327,8 @@ mcp_setup
 ```
 
 - `mcp` (= `db mcp`) — control-panel dialog
-- `mcp_setup` — setup menu + help-DB download (links for start / uninstall)
-- `mcp_setup, update` — reinstall the latest version (restart Stata and run it before connecting, then restart again)
+- `mcp_setup` — download the server program and help DB + setup menu (links for start / uninstall)
+- `mcp_setup, update` — reinstall the latest version and fetch the server program and help DB when they have changed (restart Stata and run it before connecting, then restart again)
 - `mcp_setup, updatecheck(off)` — turn off the new-version check and anonymous connection count on connect (`on` to turn it back on)
 
 > Menu-bar registration (User ▸ Stata-MCP) is handled by `mcp_setup`. If the menu
@@ -342,10 +341,21 @@ mcp_uninstall
 ```
 
 - `mcp_uninstall` — preview (deletes nothing): lists targets + a confirm link
-- `mcp_uninstall, confirm` — removes ado/dlg/jar + menu registration (keeps settings/instructions)
+- `mcp_uninstall, confirm` — removes ado/dlg, the connection module and the server program + menu registration (keeps settings/instructions)
 - `mcp_uninstall, confirm all` — also removes settings and instruction data
 
 > The **Uninstall** button in the control panel (`db mcp`) runs the preview (first line above) as well.
+
+### 8-4. Settings file
+
+Write one setting per line in `.stata_mcp/stata_mcp.properties` under your home folder (the file is created on first start). Restart the server for a change to take effect (`mcp_server, stop`, then `mcp_connect`).
+
+| Setting | Meaning |
+|---|---|
+| `BRIDGE_PORT` / `DRONE_PORT` | Ports (default 8080 / 8001) |
+| `stata.mcp.watchdog.mode` | When the server stops by itself — `both` (default) · `stata` · `client` (1-3) |
+| `DATA_TOOL=on` | Turns on the tool that lets Claude read data values directly as a table (getData). Off by default |
+| `PUSH_RELAY=off` | Turns off the external relay used to receive pushes automatically in Cowork and chat (7-3) |
 
 ### 8-3. Using several Stata sessions (advanced)
 

@@ -29,29 +29,34 @@ ChatGPT 데스크톱 앱에서도 연결할 수 있습니다 — 6장 참고.
 
 ## 2. Stata 측 설치
 
-Stata 에서 한 줄:
+Stata 에서 두 줄:
 
 ```stata
 net install stata-mcp, from("https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/release") replace
 ```
 
-jar 2종 + ado/dlg 가 자동 다운로드됩니다. 설치는 이게 전부입니다 — 도움말 DB(~32MB)는 다음 장의 `mcp_connect` 가 처음 연결할 때 받을지 물어봅니다 (y 권장, 인터넷 연결 필요).
+```stata
+mcp_setup
+```
+
+- `net install …` — Stata 명령(ado)과 연결 모듈을 설치합니다
+- `mcp_setup` — 서버 프로그램과 도움말 DB(~32MB)를 받습니다 (인터넷 연결 필요, 한 번만)
 
 업데이트는 **Stata 를 새로 켠 뒤, `mcp_connect` 로 연결하기 전에**:
 
 ```stata
 mcp_setup, update
-mcp_setup, updatedb
 ```
 
-- `mcp_setup, update` — 최신 버전으로 재설치. 오류가 나면 위의 설치 명령(`net install ...`)을 다시 실행하세요
-- `mcp_setup, updatedb` — 도움말 DB 도 최신으로 (제어판 [Update help DB] 버튼과 동일)
+- `mcp_setup, update` — 최신 버전으로 재설치하고 서버 프로그램·도움말 DB 도 새 판이면 받습니다. 오류가 나면 위의 설치 명령 두 줄을 다시 실행하세요
 
 > 업데이트를 적용하려면 **Stata 를 다시 재시작**한 뒤 `mcp_connect` 로 연결하세요.
 
 > Claude 확장 프로그램(`.mcpb`)은 위 업데이트와 별개입니다. 새 버전이 나오면 4-1장의 파일을 다시 받아 같은 방법으로 설치하세요.
 
-> 포트를 바꾸려면 (기본 8080/8001) jar 옆 `stata_mcp.properties` 의 `BRIDGE_PORT`/`DRONE_PORT` 수정 — 파일은 첫 기동 시 자동 생성.
+> 포트를 바꾸려면 (기본 8080/8001) 홈 폴더의 `.stata_mcp/stata_mcp.properties` 에서 `BRIDGE_PORT`/`DRONE_PORT` 수정 — 파일은 첫 기동 시 자동 생성.
+
+> 서버 프로그램을 실행할 수 없는 PC 는 [TROUBLESHOOTING.md](TROUBLESHOOTING.md) 의 "서버 프로그램이 실행되지 않는 PC" 참고.
 
 ---
 
@@ -61,9 +66,9 @@ mcp_setup, updatedb
 mcp_connect
 ```
 
-MCP 서버와 드론이 한 번에 기동됩니다. 첫 실행이면 도움말 DB 다운로드를 물어봅니다 — `y` 입력(권장).
+이 Stata 가 Claude 와 연결됩니다. Stata 와 Claude 는 어느 쪽을 먼저 켜도 됩니다.
 
-> Stata 를 종료하면 서버도 자동으로 함께 종료됩니다. 명령 대신 GUI 제어판(`db mcp`)으로도 켤 수 있습니다 — [USAGE.md](USAGE.md) 참고.
+> Stata 와 Claude 를 모두 끄면 서버도 자동으로 꺼집니다. 명령 대신 GUI 제어판(`db mcp`)으로도 켤 수 있습니다 — [USAGE.md](USAGE.md) 참고.
 
 > 연결할 때 새 버전이 있는지 한 번 확인하고, 있으면 결과 창에 안내가 나옵니다 (Stata 를 재시작한 뒤 연결하기 전에 `mcp_setup, update` 실행). 이때 연결 횟수만 익명으로 집계됩니다. 끄려면 `mcp_setup, updatecheck(off)`. 지원이 끝난 버전은 연결되지 않고 안내가 나옵니다.
 
@@ -81,10 +86,10 @@ Mac·Windows 공용입니다. 코워크와 Claude Code 탭에서 쓸 수 있습�
 
 **방법 A — 마켓플레이스 (한 번 등록하면 이후 업데이트 자동)**
 
-1. Claude Desktop 왼쪽 아래 **이름**을 클릭 → **설정** → **사용자 지정 → 플러그인**
-2. 오른쪽 위 **+ 추가** → **마켓플레이스 추가** → GitHub 주소에 `mhjung0822/stata-mcp` 입력
+1. Claude Desktop 왼쪽 목록에서 **플러그인** 을 누릅니다
+2. 오른쪽 위 **추가** → **마켓플레이스 추가** → GitHub 주소에 `mhjung0822/stata-mcp` 입력
 3. 목록에 나온 **Stata MCP** 를 **설치** → "로컬 MCP 서버" 안내 창에서 **계속**
-4. 마켓플레이스 항목에서 **자동 업데이트** 를 켜 두면 새 버전이 나올 때 알아서 받습니다
+4. **추가** → **마켓플레이스 관리** 에서 **자동 업데이트** 를 켜 두면 새 버전이 나올 때 알아서 받습니다
 
 **방법 B — 파일 업로드** (오프라인·방법 A 가 안 보이는 환경)
 
@@ -92,13 +97,11 @@ Mac·Windows 공용입니다. 코워크와 Claude Code 탭에서 쓸 수 있습�
 
    <img src="images/claude-plugin-1.png" alt="다운로드 폴더의 stata-mcp.plugin" width="640">
 
-2. Claude Desktop 왼쪽 아래 **이름**을 클릭 → **설정** → 왼쪽 목록 **사용자 지정 → 플러그인**
+2. Claude Desktop 왼쪽 목록에서 **플러그인** 을 누릅니다
 
-   <img src="images/claude-plugin-2.png" alt="설정 - 플러그인 화면" width="640">
+3. 오른쪽 위 **추가** → **플러그인 업로드**
 
-3. 오른쪽 위 **+ 추가** → **플러그인 업로드**
-
-   <img src="images/claude-plugin-3.png" alt="추가 메뉴 - 플러그인 업로드" width="640">
+   <img src="images/claude-plugin-3.png" alt="플러그인 화면 - 추가 메뉴의 플러그인 업로드" width="640">
 
 4. 받은 파일을 이 화면에 **끌어다 놓거나**, 찾아보기로 선택합니다
 
@@ -112,11 +115,11 @@ Mac·Windows 공용입니다. 코워크와 Claude Code 탭에서 쓸 수 있습�
 
    <img src="images/claude-plugin-6.png" alt="로컬 MCP 서버 안내 창" width="640">
 
-7. **Stata MCP** 화면에 **Skills · 12**, **커넥터 · 1** 이 보이고 오른쪽 위 스위치가 켜져 있으면 완료
+7. **Stata MCP** 화면에 **Skills · 11**, **커넥터 · 1** 이 보이고 오른쪽 위 스위치가 켜져 있으면 완료
 
    <img src="images/claude-plugin-7.png" alt="설치 완료 - Stata MCP 플러그인 화면" width="640">
 
-> 3장에서 서버(`mcp_connect`)를 먼저 띄워 두어야 도구가 동작합니다. 업데이트: 방법 A 는 자동(또는 마켓플레이스 항목의 **업데이트**), 방법 B 는 새 `.plugin` 파일을 같은 방법으로 다시 업로드. 슬래시 명령 목록과 사용법은 [USAGE.md](USAGE.md). Claude Code 탭에서는 이름 앞에 `stata-mcp:` 가 붙습니다 (예: `/stata-mcp:stata-exec`).
+> Stata 에서 3장의 `mcp_connect` 를 실행해 두어야 도구가 동작합니다. 업데이트: 방법 A 는 자동(또는 마켓플레이스 항목의 **업데이트**), 방법 B 는 새 `.plugin` 파일을 같은 방법으로 다시 업로드. 슬래시 명령 목록과 사용법은 [USAGE.md](USAGE.md). Claude Code 탭에서는 이름 앞에 `stata-mcp:` 가 붙습니다 (예: `/stata-mcp:stata-exec`).
 
 ### 4-2. 채팅에서도 쓰려면 (선택)
 
@@ -135,6 +138,8 @@ Mac 은 **⌘Q** 로 종료하세요. 이후 순서대로:
 2. Claude Desktop 실행
 ```
 
+순서는 바뀌어도 됩니다.
+
 이후 코워크 세션(또는 Claude Code 탭)에서 둘 중 하나를 입력합니다:
 
 ```
@@ -150,7 +155,7 @@ Stata 버전 알려줘
 안 되면 순서대로 확인하세요:
 
 1. Stata 결과창 — `mcp_connect` 출력에 `Ready for commands` 가 있는지 (없으면 3장 서버 기동)
-2. 설정 → 플러그인 — **Stata MCP** 가 켜져 있는지 (채팅은 설정 → 확장 프로그램). 켜져 있는데 안 되면 Claude Desktop 완전 종료 후 재실행
+2. 왼쪽 목록 **플러그인** — **Stata MCP** 가 켜져 있는지 (채팅은 설정 → 확장 프로그램). 켜져 있는데 안 되면 Claude Desktop 완전 종료 후 재실행
 
 사용법 전반은 [USAGE.md](USAGE.md) 참고 — 시작 순서, 제어판, push 알림, 도움말 조회, 문제 해결. 드문 환경 이슈는 [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
 
