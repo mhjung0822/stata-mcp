@@ -1,10 +1,6 @@
 ---
 name: stata-pull
-description: |
-  슬래시 명령어 /stata-pull 전용. 사용자가 /stata-pull 슬래시 명령어를 입력할 때만 트리거됨.
-  Stata GUI에서 push된 결과 또는 async 완료 결과를 StataMCP:getPushResults를 통해 즉시 가져오며,
-  결과를 파싱하여 내용을 정리하여 출력하며, 외부 지식 및 추론은 추가하지 않음.
-  자연어 Stata push 결과 요청에는 트리거하지 말 것 — 명시적인 /stata-pull 호출에만 반응.
+description: "/stata-pull 전용 — getPushResults 로 push·async 결과를 가져와 정리 (외부 지식·추론 추가 없음). 자연어 요청에는 쓰지 않음."
 ---
 
 # stata-pull

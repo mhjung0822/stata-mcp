@@ -1,7 +1,7 @@
 *! mcp_watchdog  v0.1.1  20oct2026
 *!
 *! Stata 종료 시 서버 자동 종료 설정 (마지막 Stata 가 끝나면 grace 초 뒤 종료).
-*!   1) stata_mcp.properties (server jar 옆) 에
+*!   1) stata_mcp.properties (~/.stata_mcp/) 에
 *!      enabled / grace-seconds 를 기록 → 서버 재시작 후에도 유지
 *!   2) 떠 있는 브릿지에 POST /api/watchdog → 재시작 없이 즉시 반영
 *!
@@ -30,15 +30,25 @@ program mcp_watchdog
     * Windows cmd 는 /dev/null 을 경로로 해석해 명령이 깨짐 → OS 분기 (mcp_server 와 동일)
     local devnul = cond("`c(os)'" == "Windows", "nul", "/dev/null")
 
-    * ─── properties 경로 = server jar 옆 ─────────────────────────────────
-    capture findfile stata-mcp-server.jar
+    * ─── properties 경로 = ~/.stata_mcp/ (서버·드론이 같이 읽는 한 파일) ──
+    * 홈 폴더는 cd ~ 로 읽는다 (Windows Stata 17 은 USERPROFILE 의 한글을 깨뜨림).
+    * 새 파일이 아직 없으면 예전 자리(드론 jar 옆)의 내용을 바탕으로 쓴다 = 처음 쓸 때 옮겨짐.
+    local old `"`c(pwd)'"'
+    quietly cd ~
+    local home `"`c(pwd)'"'
+    quietly cd `"`old'"'
+    capture mkdir `"`home'/.stata_mcp"'
+    local props `"`home'/.stata_mcp/stata_mcp.properties"'
+    local src `"`props'"'
+    capture confirm file `"`props'"'
     if _rc {
-        di as error "mcp_watchdog: stata-mcp-server.jar not found in adopath"
-        exit 601
+        capture findfile stata-drone.jar
+        if !_rc {
+            local jarpath `"`r(fn)'"'
+            local jardir : subinstr local jarpath "stata-drone.jar" ""
+            local src `"`jardir'stata_mcp.properties"'
+        }
     }
-    local jarpath `"`r(fn)'"'
-    local jardir : subinstr local jarpath "stata-mcp-server.jar" ""
-    local props `"`jardir'stata_mcp.properties"'
 
     * ─── read-modify-write: 두 키만 교체, 나머지 줄(라이선스 등) 보존 ──────
     * quietly 블록 — file open(write replace)·copy 가 SFI 실행 컨텍스트에서
@@ -49,9 +59,9 @@ program mcp_watchdog
     local wrote_gr = 0
     quietly {
         file open `out' using `"`tmp'"', write text replace
-        capture confirm file `"`props'"'
+        capture confirm file `"`src'"'
         if !_rc {
-            file open `in' using `"`props'"', read text
+            file open `in' using `"`src'"', read text
             file read `in' line
             while r(eof) == 0 {
                 if strpos(`"`macval(line)'"', "stata.mcp.watchdog.enabled") == 1 {

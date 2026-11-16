@@ -1,9 +1,6 @@
 ---
 name: stata-vars
-description: |
-  슬래시 명령어 /stata-vars 전용. 사용자가 /stata-vars 슬래시 명령어를 입력할 때만 트리거됨.
-  StataMCP:openVarsPage 로 Stata MCP 변수 창(서버 페이지)을 즉시 열며, 어떠한 해석·수정·모델 추론도 수행하지 않음.
-  자연어 Stata 요청에는 트리거하지 말 것 — 명시적인 /stata-vars 호출에만 반응.
+description: "/stata-vars 전용 — openVarsPage 로 Stata MCP 변수 창을 연다 (해석 없음). 자연어 요청에는 쓰지 않음."
 ---
 
 # stata-vars

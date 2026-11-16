@@ -1,4 +1,4 @@
-*! mcp_server  v0.2.8  20oct2026
+*! mcp_server  v0.2.12  11nov2026
 *!
 *! Start / check / stop stata-mcp-server.jar located in the Stata
 *! PERSONAL ado folder (resolved via `findfile`, so no path argument
@@ -9,6 +9,8 @@
 *!   mcp_server, status            // GET http://127.0.0.1:<port>/status
 *!   mcp_server, stop              // terminate any java process running the jar
 *!   mcp_server, bridgeport(8090)  // override status check port (default 8080)
+*!
+*! Which server: the Go binary at ~/.stata_mcp/bin (placed by mcp_setup or the Claude plugin) if present, otherwise the jar.
 *!
 *! Notes:
 *! - On macOS/Linux uses `shell bash -c "... & disown"` — wrapping in bash
@@ -42,6 +44,7 @@ program mcp_server
         }
         else {
             quietly shell pkill -f stata-mcp-server.jar
+            quietly shell pkill -f "stata-mcp-server serve"
         }
         exit
     }
@@ -86,6 +89,40 @@ program mcp_server
             di as text "[Server] already running on port `bridgeport' — skip spawn"
             exit
         }
+    }
+
+    * ─── 서버 고르기: 고정 자리의 Go 서버가 있으면 그것, 없으면 jar ─────────
+    * Go 서버 실행 파일은 패키지에 없다 — mcp_setup 이 받아 ~/.stata_mcp/bin 에 둔다 (Claude 플러그인도 같은 자리에 깐다).
+    * 포트를 인자로 넘긴다 (Go 서버의 기본 포트는 8090). --managed = 대신 띄워 준 서버라는 표시 —
+    * 이 표시가 있어야 자동 종료 대상이 된다 (직접 띄운 서버는 사용자가 끈다).
+    _mcp_server_bin
+    local bin `"`r(bin)'"'
+    capture confirm file `"`bin'"'
+    if _rc {
+        capture findfile stata-mcp-server.jar
+        if _rc {
+            * 둘 다 없음 = Go 서버 채널인데 아직 안 받았다 (mcp_setup 을 안 돌림) — 지금 받아 온다
+            capture noisily mcp_setup, server
+            capture confirm file `"`bin'"'
+            if _rc {
+                di as text "[Server] 서버 파일이 없습니다 — Claude 를 켜면 플러그인이 서버를 띄우고, 이 Stata 는 그때 연결됩니다."
+                di as text "         (Stata 에서 띄우려면 인터넷 연결 후 {stata mcp_setup, server:mcp_setup, server})"
+                exit
+            }
+        }
+    }
+    capture confirm file `"`bin'"'
+    if !_rc {
+        if "`c(os)'" == "Windows" {
+            winexec "`bin'" serve `bridgeport' --managed
+        }
+        else {
+            * Stata 의 copy 로 받은 파일은 실행 권한이 없다. FD 닫기 · nohup · disown 은 아래 jar 스폰과 같은 이유.
+            quietly shell chmod +x "`bin'"
+            quietly shell bash -c 'for fd in {3..1023}; do eval "exec \$fd>&-"; done 2>/dev/null; nohup "`bin'" serve `bridgeport' --managed </dev/null >/dev/null 2>&1 & disown'
+        }
+        di as text "[Server] spawned (detached)"
+        exit
     }
 
     capture findfile stata-mcp-server.jar
@@ -147,4 +184,23 @@ program mcp_server
         quietly shell bash -c 'for fd in {3..1023}; do eval "exec \$fd>&-"; done 2>/dev/null; nohup `jrun' -jar "`jar'" </dev/null >/dev/null 2>&1 & disown'
     }
     di as text "[Server] spawned (detached)"
+end
+
+* 고정 자리의 Go 서버 실행 파일 경로 — r(dir) · r(bin). mcp_setup · mcp_uninstall 도 이 자리를 쓴다.
+* (실행 파일 쪽 install.go 의 fixedExe 와 같은 자리)
+cap program drop _mcp_server_bin
+program _mcp_server_bin, rclass
+    version 17.0
+    * 경로는 양 OS 모두 / 로 (Windows 의 Stata · winexec 도 받는다)
+    local win = "`c(os)'" == "Windows"
+    * 홈 폴더 — 환경 변수(USERPROFILE)로 읽으면 Windows 에서 한글 사용자 이름이 깨진다 (Stata 17 실측).
+    * Stata 가 아는 ~ 로 가서 그 경로를 읽고 돌아온다.
+    local old `"`c(pwd)'"'
+    quietly cd ~
+    local home `"`c(pwd)'"'
+    quietly cd `"`old'"'
+    local name = cond(`win', "stata-mcp-server.exe", "stata-mcp-server")
+    return local dir  `"`home'/.stata_mcp/bin"'
+    return local bin  `"`home'/.stata_mcp/bin/`name'"'
+    return local name "`name'"
 end

@@ -1,4 +1,4 @@
-*! mcp_uninstall  v0.6.1  28sep2026
+*! mcp_uninstall  v0.6.4  11nov2026
 *!
 *! Stata-MCP 제거 — `net install` 한 PLUS 레이아웃만. 개발/수동 위치
 *! (c(sysdir_personal), ~/Documents/StataMCP/)는 건드리지 않는다.
@@ -47,11 +47,29 @@ program mcp_uninstall
         local ++nfiles
         local P`nfiles' `"`plus'jar/`j'"'
     }
+    * Go 서버 실행 파일 — 고정 자리(~/.stata_mcp/bin, mcp_setup 이 받아 둔 것) · 이전 베타가 ado 폴더(s/)에 두던 것
+    * 홈 폴더 — 환경 변수(USERPROFILE)로 읽으면 Windows 에서 한글 사용자 이름이 깨진다 (Stata 17 실측).
+    * Stata 가 아는 ~ 로 가서 그 경로를 읽고 돌아온다.
+    local old `"`c(pwd)'"'
+    quietly cd ~
+    local home `"`c(pwd)'"'
+    quietly cd `"`old'"'
+    foreach x in stata-mcp-server stata-mcp-server.exe VERSION {
+        local ++nfiles
+        local P`nfiles' `"`home'/.stata_mcp/bin/`x'"'
+    }
+    foreach x in stata-mcp-server stata-mcp-server.exe {
+        local ++nfiles
+        local P`nfiles' `"`plus's/`x'"'
+    }
     if "`all'" != "" {
         foreach x of local data {
             local ++nfiles
             local P`nfiles' `"`plus'jar/`x'"'
         }
+        * 설정 파일의 기본 자리 (서버 로그 폴더 ~/.stata_mcp/server-logs 는 남김 — Stata 는 빈 폴더만 지울 수 있다)
+        local ++nfiles
+        local P`nfiles' `"`home'/.stata_mcp/stata_mcp.properties"'
     }
 
     * ─── 미리보기 ────────────────────────────────────────────────────────

@@ -1,10 +1,16 @@
 {
   "name": "stata-mcp",
   "displayName": "Stata MCP",
-  "version": "0.13.7",
-  "description": "Stata MCP 연결 + 슬래시 스킬 12종 — 동봉 프록시(stdio↔:8080)로 Stata 의 MCP 서버에 붙는다. Stata 에서 mcp_connect 로 서버를 먼저 켜세요.",
-  "author": { "name": "mhjung0822" },
+  "version": "0.14.0",
+  "description": "Stata MCP 연결 + 슬래시 스킬 11종 — 동봉 실행 파일이 MCP 서버를 띄우고 Stata 에 붙는다 (Stata 에서 mcp_connect).",
+  "author": {
+    "name": "mhjung0822"
+  },
   "repository": "https://github.com/mhjung0822/stata-mcp",
-  "types": "./types/index.d.ts",
-  "keywords": ["stata", "mcp", "econometrics", "statistics"]
+  "keywords": [
+    "stata",
+    "mcp",
+    "econometrics",
+    "statistics"
+  ]
 }

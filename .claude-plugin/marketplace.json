@@ -1,6 +1,8 @@
 {
   "name": "stata-mcp",
-  "owner": { "name": "mhjung0822" },
+  "owner": {
+    "name": "mhjung0822"
+  },
   "metadata": {
     "description": "Stata MCP — Claude 플러그인 마켓플레이스 (MCP 연결 + 슬래시 스킬)"
   },
@@ -8,7 +10,7 @@
     {
       "name": "stata-mcp",
       "source": "./plugins/stata-mcp",
-      "description": "Stata MCP 연결 + 슬래시 스킬 12종 — 동봉 프록시로 Stata 의 MCP 서버에 붙는다. Stata 에서 mcp_connect 로 서버를 먼저 켜세요.",
+      "description": "Stata MCP 연결 + 슬래시 스킬 11종 — 동봉 실행 파일이 MCP 서버를 띄우고 Stata 에 붙는다 (Stata 에서 mcp_connect).",
       "category": "data-science"
     }
   ]

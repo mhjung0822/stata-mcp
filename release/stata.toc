@@ -1,4 +1,4 @@
 v 3
-d Stata MCP — Stata-side packages (drone, server jar, ado commands)
-d https://github.com/mhjung0822/stata_mcp-releases
-p stata-mcp Stata MCP — drone, server jar, and ado command suite
+d Stata MCP — Stata-side packages (drone, ado commands)
+d https://github.com/mhjung0822/stata-mcp
+p stata-mcp Stata MCP — drone and ado command suite

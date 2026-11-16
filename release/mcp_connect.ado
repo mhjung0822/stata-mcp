@@ -1,4 +1,4 @@
-*! mcp_connect  v0.3.13  20oct2026
+*! mcp_connect  v0.3.15  11nov2026
 *!
 *! Start / stop / reset the full Stata-MCP stack (server jar + drone).
 *! Internally invokes mcp_server for the JVM-detached server spawn and

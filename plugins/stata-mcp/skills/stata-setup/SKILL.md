@@ -1,17 +1,14 @@
 ---
 name: stata-setup
-description: |
-  슬래시 명령어 /stata-setup 전용. 사용자가 /stata-setup 슬래시 명령어를 입력할 때만 트리거됨.
-  Stata 세션 환경 확인(env·pwd·마운트)과 세션 지침 로드를 위해 정해진 순서대로 즉시 실행한다.
-  자연어 Stata 요청에는 트리거하지 말 것 — 명시적인 /stata-setup 호출에만 반응.
+description: "/stata-setup 전용 — Stata 세션 환경(env·pwd·마운트) 확인과 세션 지침 로드를 정해진 순서로 실행. 자연어 요청에는 쓰지 않음."
 ---
 
 # stata-setup
 
 `/stata-setup` 호출 시 아래 순서대로 즉시 실행:
 
-1. `StataMCP:getStataEnv` 실행
-2. `StataMCP:getStataPwd` 실행
+1. `StataMCP:getStataInfo` 실행 — `what=["env","pwd"]` (한 번에)
+2. (1번에 포함 — 건너뜀)
 3. 시스템 프롬프트에 마운트 폴더가 있고 Stata pwd 와 다르면 AskUserQuestion 으로 사용자확인:
    - question: "stata 작업 경로를 cowork 경로로 변경할까요?"
    - options: ["네", "아니오"]
@@ -26,7 +23,7 @@ description: |
    - Stata 자체 Variables 창(`window manage forward variables`)과 다른 것 — 그 명령은 쓰지 않는다
 
 1·2번 결과는 원문을 그대로 출력하지 않고 **한 줄 요약**으로만 보인다 — 예: `Stata 19.5 MP (8 core) · macOS · 작업폴더 /Users/…`.
-`getStataEnv` 는 버전·에디션·OS 셋만 준다 (경로·한계값은 오지 않음 — sysdir 등이 필요하면 그때 `executeStata("sysdir")` 로 조회). 3번(마운트 확인)·4번(지침 로드)·5번(변수 창)은 정의된 동작을 수행한다.
+`getStataInfo` 의 env 는 버전·에디션·OS 셋만 준다 (경로·한계값은 오지 않음 — sysdir 등이 필요하면 그때 `executeStata("sysdir")` 로 조회). 3번(마운트 확인)·4번(지침 로드)·5번(변수 창)은 정의된 동작을 수행한다.
 
 ## 도구 지침 요약 (v0.12.30) — 이 세션 내내 기억할 것
 
@@ -58,9 +55,11 @@ description: |
   자연어 메모 (검색 대상 — async 결과를 pull 한 뒤 메모를 달아두면 나중에 찾기 쉬움),
   `<id>` = 전문 재조회, `consume`/`delete <id>` = 삭제, `save [id]`/`load <경로>` =
   JSON 스냅샷으로 세션 간 이어가기.
-- **단건 조회는 `getMacro(name, type)` 하나**: 맨이름(`'b'`)이면 local/global/스칼라/행렬을
-  전부 프로브해 있는 것을 다 반환, stored 는 풀 표기(`'e(r2)'`, `'e(cmd)'`, `'e(V)'`).
-  getScalar/getMatrix 는 v0.11.0 에서 폐지됨.
+- **이름으로 찾기는 `getStored(name, type)` 하나**: 맨이름(`'b'`)이면 local/global/스칼라/행렬을
+  전부 프로브해 있는 것을 다 반환, stored 는 풀 표기(`'e(r2)'`, `'e(cmd)'`, `'e(V)'`). 필요한 이름만,
+  여러 개는 공백으로 한 번에(`'e(N) e(r2_a)'`). r() · e() 묶음 전체는 주지 않는다 — 이름·뜻은 `getHelp(명령, 'stored')`.
+- **Stata 상태는 `getStataInfo(what)` 하나**: env · pwd · obs · signature 중 필요한 것만.
+  값 라벨은 `getVariables(labels='라벨이름')` (`'*'` = 라벨 이름 목록).
 - **문법이 불확실하거나 응답 `rc`≠0**: `getHelp` 로 확인 후 자가수정. 약어(`'su'`) 자동 해석,
   다단어(`'random effects'`)는 키워드 검색. async 실행 중에도 즉답.
 - **사용자 인터랙션**: 다음 단계가 여러 가지일 때는 단순 질문보다 AskUserQuestion 으로 선택지 제공.

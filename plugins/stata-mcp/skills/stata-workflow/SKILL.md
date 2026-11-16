@@ -1,9 +1,6 @@
 ---
 name: stata-workflow
-description: |
-  슬래시 명령어 /stata-workflow 전용. 사용자가 /stata-workflow 슬래시 명령어를 입력할 때만 트리거됨.
-  StataMCP:workflow 로 등록 절차(패널 분석 · 패널 데이터 생성)의 첫 화면을 즉시 띄우며, 어떠한 해석·수정·모델 추론도 수행하지 않음.
-  자연어 분석 요청에는 트리거하지 말 것 — 명시적인 /stata-workflow 호출에만 반응.
+description: "/stata-workflow 전용 — workflow 도구로 등록 절차(패널 분석 · 패널 데이터 생성)의 첫 화면을 띄운다. 자연어 요청에는 쓰지 않음."
 ---
 
 # stata-workflow

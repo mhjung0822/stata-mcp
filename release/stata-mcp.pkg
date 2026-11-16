@@ -1,19 +1,16 @@
-d 'STATA-MCP': Stata MCP — drone, server jar, and ado command suite
+d 'STATA-MCP': Stata MCP — drone and ado command suite
 d
-d Bundles the Stata-side artifacts of the Stata MCP project so they
-d can be installed in one shot via `net install stata-mcp, from(...)`
-d into the user's PERSONAL ado folder.
+d Stata side of the Stata MCP project: the drone (runs inside Stata's
+d JVM) and the ado commands. The MCP server is a separate executable
+d (stata-mcp-server) that is not part of this package — run mcp_setup
+d after install to fetch it.
 d
 d Author: mhjung0822
-d Support: https://github.com/mhjung0822/stata_mcp-releases
-d Distribution-Date: 20261111
+d Support: https://github.com/mhjung0822/stata-mcp
+d Distribution-Date: 20261117
 d
-d Requires: Stata 17 or higher (18+ recommended; bundled Java is used)
-d
-d After install, see INSTALL.md for client (Claude Desktop / Code / Cursor)
-d setup and USAGE.md for `mcp_connect` startup.
+d Requires: Stata 17 or higher (18+ recommended; bundled Java is used for the drone)
 
-F stata-mcp-server.jar
 F stata-drone.jar
 F mcp_connect.ado
 F mcp_server.ado

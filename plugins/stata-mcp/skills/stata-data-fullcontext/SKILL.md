@@ -1,17 +1,13 @@
 ---
 name: stata-data-fullcontext
-description: |
-  슬래시 명령어 /stata-data-fullcontext 전용. 사용자가 /stata-data-fullcontext 슬래시 명령어를 입력할 때만 트리거됨.
-  현재 Stata 데이터셋의 전체 컨텍스트를 파악하기 위해 정해진 순서대로 즉시 실행하며,
-  실행 후 데이터셋 전체를 상세 요약하여 반환.
-  자연어 Stata 데이터 요청에는 트리거하지 말 것 — 명시적인 /stata-data-fullcontext 호출에만 반응.
+description: "/stata-data-fullcontext 전용 — 현재 데이터셋 전체를 정해진 순서로 파악해 상세 요약. 자연어 요청에는 쓰지 않음."
 ---
 
 # stata-data-fullcontext
 
 `/stata-data-fullcontext` 호출 시 아래 순서대로 즉시 실행:
 
-1. `StataMCP:getObsCount` 실행
+1. `StataMCP:getStataInfo` 실행 — `what=["obs"]`
 2. `StataMCP:getVariables` 실행
 3. `StataMCP:executeStata` — cmd: `codebook` 실행
 

@@ -1,10 +1,6 @@
 ---
 name: stata-exec
-description: |
-  슬래시 명령어 /stata-exec 전용. 사용자가 /stata-exec 슬래시 명령어를 입력할 때만 트리거됨.
-  StataMCP:executeStata를 통해 /stata-exec $ARGUMENTS를 즉시 직접 실행하며,
-  어떠한 해석, 수정, 모델 추론도 수행하지 않음.
-  자연어 Stata 요청에는 트리거하지 말 것 — 명시적인 /stata-exec 호출에만 반응.
+description: "/stata-exec 전용 — 받은 명령을 executeStata 로 그대로 실행 (해석·수정 없음). 자연어 요청에는 쓰지 않음."
 ---
 
 # stata-exec
