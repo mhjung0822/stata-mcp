@@ -11,9 +11,8 @@ For installation, see [README.en.md](README.en.md).
 ### 1-1. Startup order
 
 ```
-1. Start Stata → mcp_connect (server + drone in one go)
+1. Start Stata → mcp_setup (server + drone in one go)
 2. Start Claude Desktop
-3. Toggle cowork mode ON
 ```
 
 You can start Stata and Claude in either order. From there, ask for Stata work in the chat, or send results from Stata to Claude with `llm push`.
@@ -21,7 +20,7 @@ You can start Stata and Claude in either order. From there, ask for Stata work i
 ### 1-2. Full shutdown (server + drone)
 
 ```stata
-mcp_connect, shutdown
+mcp_setup, shutdown
 ```
 
 Disconnects this Stata (same as the control panel's [Shutdown] button). The server stops once no Stata is connected and no Claude is open.
@@ -48,7 +47,7 @@ mcp_watchdog, enabled(0)
 
 ### 2-1. On the Stata side
 
-If `mcp_connect` finishes without errors, you are connected. To check, press **Server status** in the control panel (`mcp`) or run the command below — it prints the server and drone status.
+If `mcp_setup` finishes without errors, you are connected. To check, press **Server status** in the control panel (`mcp`) or run the command below — it prints the server and drone status.
 
 ```stata
 mcp_server, status
@@ -70,7 +69,7 @@ The first time you use a new MCP server, an **approval prompt** appears (`Trust 
 
 ### 2-4. Working folder
 
-`/stata-setup` asks whether to switch Stata's working folder when it differs from the Cowork folder. After that, if you move the working folder with `cd` in Stata, Claude notices automatically and asks whether to revert or keep the new folder. Write your preferred handling into your working instructions (CLAUDE.md etc.) and it is applied automatically every time.
+`/stata-setup` asks whether to switch Stata's working folder when it differs from the Claude Desktop working folder. After that, if you move the working folder with `cd` in Stata, Claude notices automatically and asks whether to revert or keep the new folder. Write your preferred handling into your working instructions (CLAUDE.md etc.) and it is applied automatically every time.
 
 > If it does not connect, see chapter 9, Troubleshooting.
 
@@ -89,7 +88,7 @@ Load the auto dataset and regress price on mpg and weight
 Claude then works through this flow:
 1. Calls the `executeStata` tool → runs `sysuse auto, clear` / `regress price mpg weight` etc.
 2. Receives the Stata results (output, r()/e(), graphs) and shows them in the chat
-3. For graph commands the response includes `graphDrawn: true` — when an image is needed, Claude calls `exportGraph` → creates `c(pwd)/g_yyyyMMddHHmm_xxxx.png` and returns `graphPath` (absolute) and `graphFilename` (shown automatically when the cowork panel monitors the working folder)
+3. For graph commands the response includes `graphDrawn: true` — when an image is needed, Claude calls `exportGraph` → creates `c(pwd)/g_yyyyMMddHHmm_xxxx.png` and returns `graphPath` (absolute) and `graphFilename` (shown automatically when the Claude Desktop panel monitors the working folder)
 4. Follow-up questions/instructions are welcome (e.g. "plot the residuals too")
 
 Responses include `rc` (Stata return code, 0 = success), so Claude can tell success from failure immediately; on a syntax error it checks the syntax itself via `getHelp` and retries.
@@ -151,7 +150,7 @@ The rest, as needed:
 - `/stata-push` — open the push app (beta). `/stata-push on` = open it and receive automatically in this conversation, `/stata-push off` = turn automatic receiving off (7-3)
 - `/stata-workflow [procedure]` — start a workflow (beta): panel analysis or panel data build, step-by-step questions through to the report (chapter 6)
 
-Preferences such as output format and analysis rules go into the working folder's CLAUDE.md (Cowork, Claude Code) or the project instructions (chat), and Claude follows them. For a starting point, download the example skill [`stata-instruction-en.zip`](https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/claude-plugins/stata-instruction-en.zip), edit it and add it as a skill (chat/Cowork: skill upload; Claude Code: `~/.claude/skills/stata-instruction/`) — `/stata-setup` then loads it. Panel merging responds to plain language like "merge the waves".
+Preferences such as output format and analysis rules go into the working folder's CLAUDE.md (Claude Desktop, Claude Code) or the project instructions (chat), and Claude follows them. For a starting point, download the example skill [`stata-instruction-en.zip`](https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/claude-plugins/stata-instruction-en.zip), edit it and add it as a skill (chat/Claude Desktop: skill upload; Claude Code: `~/.claude/skills/stata-instruction/`) — `/stata-setup` then loads it. Panel merging responds to plain language like "merge the waves".
 
 **Natural language vs skills — same job, two styles**
 
@@ -179,7 +178,7 @@ Instead of switching to the Stata window to check variable names, keep a variabl
 
 - Run `/stata-setup`; it asks "Open the variable page?" → Yes
 - Later: `/stata-vars`, or just "open the variable page"
-- Type the address: `http://127.0.0.1:8080/vars` (in the Cowork browser panel or any browser; it opens only on the same PC)
+- Type the address: `http://127.0.0.1:8080/vars` (in the Claude Desktop browser panel or any browser; it opens only on the same PC)
 
 **What you can do there**
 
@@ -212,7 +211,7 @@ The server asks you step by step about a panel analysis, runs it as answered and
 
 - `/stata-workflow` — it first asks which procedure. You can name it, as in `/stata-workflow panel analysis`
 - Or just say "run it as a workflow", "FE analysis of lnwage on age tenure in the workflow"
-- With a browser panel (Claude Code · Cowork) the workflow page opens in the panel on the right; in plain chat the same questions come as chat questions
+- With a browser panel (Claude Code · Claude Desktop) the workflow page opens in the panel on the right; in plain chat the same questions come as chat questions
 
 **The page**
 
@@ -280,7 +279,7 @@ You can see push results as a list and send the ones you pick to Claude. For new
 |---|---|---|
 | **Off** (default) | Kept in the list | "get the push results" / "summarize push #3" |
 | **On** — Code tab | Arrives in the conversation and Claude summarizes it | Nothing |
-| **On** — Cowork · chat | Arrives in the conversation and Claude summarizes it. After the conversation has been idle for a few minutes it pauses, and picks up what came in when you next say something | Nothing |
+| **On** — Claude Desktop · chat | Arrives in the conversation and Claude summarizes it. After the conversation has been idle for a few minutes it pauses, and picks up what came in when you next say something | Nothing |
 
 <img src="images/push-app-cowork.png" alt="Claude Desktop — in the chat in the middle, a new push (#8) delivered from the push app and Claude's summary; the push app in the browser panel on the right (one receiving conversation, Summarize now, the list)" width="900">
 
@@ -292,7 +291,7 @@ You can see push results as a list and send the ones you pick to Claude. For new
 - The **「자동 받기」** switch in the push app does the same. After turning it on there, say "turn the push app on" once in the conversation that should receive
 - The server tray icon menu **Open Push page** / **Open Variables page** also opens them in your browser (to look without Claude)
 
-> **When receiving automatically in Cowork or chat**, the signal that "a new result exists" travels through an external relay server. The result itself does not pass through the relay — it is fetched directly from this PC. To avoid the relay, add `PUSH_RELAY=off` to the settings file (8-4); in Cowork and chat you then fetch results with "get the push results".
+> **When receiving automatically in Claude Desktop or chat**, the signal that "a new result exists" travels through an external relay server. The result itself does not pass through the relay — it is fetched directly from this PC. To avoid the relay, add `PUSH_RELAY=off` to the settings file (8-4); in Claude Desktop and chat you then fetch results with "get the push results".
 
 **The 「Claude 에게」 (To Claude) box**
 
@@ -327,11 +326,15 @@ mcp_setup
 ```
 
 - `mcp` (= `db mcp`) — control-panel dialog
-- `mcp_setup` — download the server program and help DB + setup menu (links for start / uninstall)
+- `mcp_setup` — connect (server + drone). Run it each time you start Stata
+- `mcp_setup, install` — first install: download the server program and help DB + menu registration + connect, then print the setup menu (links to connect / disconnect / update / uninstall)
+- `mcp_setup, reset` — reconnect · `mcp_setup, shutdown` — disconnect
 - `mcp_setup, update` — reinstall the latest version and fetch the server program and help DB when they have changed (restart Stata and run it before connecting, then restart again)
 - `mcp_setup, updatecheck(off)` — turn off the new-version check and anonymous connection count on connect (`on` to turn it back on)
 
-> Menu-bar registration (User ▸ Stata-MCP) is handled by `mcp_setup`. If the menu
+> The old command `mcp_connect` still works exactly like `mcp_setup`.
+
+> Menu-bar registration (User ▸ Stata-MCP) is handled by `mcp_setup, install`. If the menu
 > is missing on the next launch, run `mcp_menu, install` and follow the printed instructions.
 
 ### 8-2. Full uninstall
@@ -348,25 +351,25 @@ mcp_uninstall
 
 ### 8-4. Settings file
 
-Write one setting per line in `.stata_mcp/stata_mcp.properties` under your home folder (the file is created on first start). Restart the server for a change to take effect (`mcp_server, stop`, then `mcp_connect`).
+Write one setting per line in `.stata_mcp/stata_mcp.properties` under your home folder (the file is created on first start). Restart the server for a change to take effect (`mcp_server, stop`, then `mcp_setup`).
 
 | Setting | Meaning |
 |---|---|
 | `BRIDGE_PORT` / `DRONE_PORT` | Ports (default 8080 / 8001) |
 | `stata.mcp.watchdog.mode` | When the server stops by itself — `both` (default) · `stata` · `client` (1-3) |
 | `DATA_TOOL=on` | Turns on the tool that lets Claude read data values directly as a table (getData). Off by default |
-| `PUSH_RELAY=off` | Turns off the external relay used to receive pushes automatically in Cowork and chat (7-3) |
+| `PUSH_RELAY=off` | Turns off the external relay used to receive pushes automatically in Claude Desktop and chat (7-3) |
 
 ### 8-3. Using several Stata sessions (advanced)
 
-Open several Stata windows and run `mcp_connect` in each — all of them connect. Claude uses one Stata window by default. When there are several, Claude asks which one to use.
+Open several Stata windows and run `mcp_setup` in each — all of them connect. Claude uses one Stata window by default. When there are several, Claude asks which one to use.
 
 #### Terminal Stata (Mac)
 
 You can also start Stata in a terminal and connect it. Give it a name so you can pick it, e.g. "run it in c1".
 
 ```bash
-stata-mp -q 'mcp_connect, name(c1)'
+stata-mp -q 'mcp_setup, name(c1)'
 ```
 
 #### Separate Stata from Claude Code (Mac)
@@ -386,13 +389,13 @@ CONSOLE_TOOLS=on
 
 ### 9-1. When it won't connect
 
-- Run `mcp_connect` again in Stata (reconnects the drone)
+- Run `mcp_setup` again in Stata (reconnects the drone)
 - If the server is down, restart it with `mcp_server`
 - Check status with the **Server status** button in the control panel (`db mcp`)
 
-### 9-2. Java version error on mcp_connect (drone won't start)
+### 9-2. Java version error on mcp_setup (drone won't start)
 
-Symptom: `mcp_connect` stops with a message saying Stata's Java is too old and Java 17 or later is required:
+Symptom: `mcp_setup` stops with a message saying Stata's Java is too old and Java 17 or later is required:
 
 ```
 [Stata-MCP] Stata 의 Java 가 11.0.x 입니다 — Java 17 이상이 필요합니다.
@@ -412,6 +415,6 @@ Stata's bundled Java is outdated. Update Stata to the latest revision:
 update all
 ```
 
-After updating, **restart Stata** → run `mcp_connect` again.
+After updating, **restart Stata** → run `mcp_setup` again.
 
 > If updating is not an option (site licenses etc.), install JDK 17 and point Stata at it with `java set home` — see `help java`. Check the current Java with `java query`.

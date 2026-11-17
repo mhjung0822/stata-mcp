@@ -36,13 +36,13 @@ net install stata-mcp, from("https://raw.githubusercontent.com/mhjung0822/stata-
 ```
 
 ```stata
-mcp_setup
+mcp_setup, install
 ```
 
 - `net install …` — Stata 명령(ado)과 연결 모듈을 설치합니다
-- `mcp_setup` — 서버 프로그램과 도움말 DB(~32MB)를 받습니다 (인터넷 연결 필요, 한 번만)
+- `mcp_setup, install` — 서버 프로그램과 도움말 DB(~32MB)를 받고 바로 연결합니다 (인터넷 연결 필요, 처음 한 번만)
 
-업데이트는 **Stata 를 새로 켠 뒤, `mcp_connect` 로 연결하기 전에**:
+업데이트는 **Stata 를 새로 켠 뒤, 연결하기 전에**:
 
 ```stata
 mcp_setup, update
@@ -50,7 +50,7 @@ mcp_setup, update
 
 - `mcp_setup, update` — 최신 버전으로 재설치하고 서버 프로그램·도움말 DB 도 새 판이면 받습니다. 오류가 나면 위의 설치 명령 두 줄을 다시 실행하세요
 
-> 업데이트를 적용하려면 **Stata 를 다시 재시작**한 뒤 `mcp_connect` 로 연결하세요.
+> 업데이트를 적용하려면 **Stata 를 다시 재시작**한 뒤 `mcp_setup` 으로 연결하세요.
 
 > Claude 확장 프로그램(`.mcpb`)은 위 업데이트와 별개입니다. 새 버전이 나오면 4-1장의 파일을 다시 받아 같은 방법으로 설치하세요.
 
@@ -63,26 +63,28 @@ mcp_setup, update
 ## 3. 서버 기동
 
 ```stata
-mcp_connect
+mcp_setup
 ```
 
-이 Stata 가 Claude 와 연결됩니다. Stata 와 Claude 는 어느 쪽을 먼저 켜도 됩니다.
+이 Stata 가 Claude 와 연결됩니다. Stata 를 켤 때마다 이 한 줄이면 됩니다 (처음 설치할 때는 `mcp_setup, install` 이 연결까지 합니다). Stata 와 Claude 는 어느 쪽을 먼저 켜도 됩니다.
+
+> 예전 명령 `mcp_connect` 도 그대로 쓸 수 있습니다.
 
 > Stata 와 Claude 를 모두 끄면 서버도 자동으로 꺼집니다. 명령 대신 GUI 제어판(`db mcp`)으로도 켤 수 있습니다 — [USAGE.md](USAGE.md) 참고.
 
 > 연결할 때 새 버전이 있는지 한 번 확인하고, 있으면 결과 창에 안내가 나옵니다 (Stata 를 재시작한 뒤 연결하기 전에 `mcp_setup, update` 실행). 이때 연결 횟수만 익명으로 집계됩니다. 끄려면 `mcp_setup, updatecheck(off)`. 지원이 끝난 버전은 연결되지 않고 안내가 나옵니다.
 
-> ⚠️ **`Java 17 이상이 필요합니다` 안내가 나오거나, `java.lang.UnsupportedClassVersionError` 가 붉게 출력되며 드론이 시작되지 않으면** — Stata 내장 Java 가 구버전인 경우입니다. Stata 에서 `update all` 로 최신 업데이트 후 **Stata 재시작** → `mcp_connect` 재실행. 상세는 [USAGE.md](USAGE.md) 문제 해결 참고.
+> ⚠️ **`Java 17 이상이 필요합니다` 안내가 나오거나, `java.lang.UnsupportedClassVersionError` 가 붉게 출력되며 드론이 시작되지 않으면** — Stata 내장 Java 가 구버전인 경우입니다. Stata 에서 `update all` 로 최신 업데이트 후 **Stata 재시작** → `mcp_setup` 재실행. 상세는 [USAGE.md](USAGE.md) 문제 해결 참고.
 
 ---
 
-## 4. Claude 등록 (코워크 · Claude Code)
+## 4. Claude 등록 (Claude Desktop · Claude Code)
 
-> Windows 에서 코워크 자체가 켜지지 않는 등 환경 문제는 [TROUBLESHOOTING.md](TROUBLESHOOTING.md) 참고.
+> Windows 에서 Claude Desktop 이 켜지지 않는 등 환경 문제는 [TROUBLESHOOTING.md](TROUBLESHOOTING.md) 참고.
 
 ### 4-1. 플러그인 설치 (MCP 연결 + 슬래시 명령)
 
-Mac·Windows 공용입니다. 코워크와 Claude Code 탭에서 쓸 수 있습니다. 두 방법 중 하나를 고르세요.
+Mac·Windows 공용입니다. Claude Desktop 과 Claude Code 탭에서 쓸 수 있습니다. 두 방법 중 하나를 고르세요.
 
 **방법 A — 마켓플레이스 (한 번 등록하면 이후 업데이트 자동)**
 
@@ -119,11 +121,11 @@ Mac·Windows 공용입니다. 코워크와 Claude Code 탭에서 쓸 수 있습�
 
    <img src="images/claude-plugin-7.png" alt="설치 완료 - Stata MCP 플러그인 화면" width="640">
 
-> Stata 에서 3장의 `mcp_connect` 를 실행해 두어야 도구가 동작합니다. 업데이트: 방법 A 는 자동(또는 마켓플레이스 항목의 **업데이트**), 방법 B 는 새 `.plugin` 파일을 같은 방법으로 다시 업로드. 슬래시 명령 목록과 사용법은 [USAGE.md](USAGE.md). Claude Code 탭에서는 이름 앞에 `stata-mcp:` 가 붙습니다 (예: `/stata-mcp:stata-exec`).
+> Stata 에서 3장의 `mcp_setup` 을 실행해 두어야 도구가 동작합니다. 업데이트: 방법 A 는 자동(또는 마켓플레이스 항목의 **업데이트**), 방법 B 는 새 `.plugin` 파일을 같은 방법으로 다시 업로드. 슬래시 명령 목록과 사용법은 [USAGE.md](USAGE.md). Claude Code 탭에서는 이름 앞에 `stata-mcp:` 가 붙습니다 (예: `/stata-mcp:stata-exec`).
 
 ### 4-2. 채팅에서도 쓰려면 (선택)
 
-채팅 화면은 플러그인 대신 확장 프로그램과 스킬 zip 을 씁니다. 설치 방법은 [CHAT.md](CHAT.md). 코워크·Claude Code 만 쓴다면 건너뛰세요.
+채팅 화면은 플러그인 대신 확장 프로그램과 스킬 zip 을 씁니다. 설치 방법은 [CHAT.md](CHAT.md). Claude Desktop·Claude Code 만 쓴다면 건너뛰세요.
 
 ---
 
@@ -134,13 +136,13 @@ Stata 와 Claude Desktop 을 모두 **완전 종료**한 상태에서 시작합�
 Mac 은 **⌘Q** 로 종료하세요. 이후 순서대로:
 
 ```
-1. Stata 실행 → mcp_connect
+1. Stata 실행 → mcp_setup
 2. Claude Desktop 실행
 ```
 
 순서는 바뀌어도 됩니다.
 
-이후 코워크 세션(또는 Claude Code 탭)에서 둘 중 하나를 입력합니다:
+이후 Claude Desktop 대화(또는 Claude Code 탭)에서 둘 중 하나를 입력합니다:
 
 ```
 Stata 버전 알려줘
@@ -154,7 +156,7 @@ Stata 버전 알려줘
 
 안 되면 순서대로 확인하세요:
 
-1. Stata 결과창 — `mcp_connect` 출력에 `Ready for commands` 가 있는지 (없으면 3장 서버 기동)
+1. Stata 결과창 — `mcp_setup` 출력에 `Ready for commands` 가 있는지 (없으면 3장 서버 기동)
 2. 왼쪽 목록 **플러그인** — **Stata MCP** 가 켜져 있는지 (채팅은 설정 → 확장 프로그램). 켜져 있는데 안 되면 Claude Desktop 완전 종료 후 재실행
 
 사용법 전반은 [USAGE.md](USAGE.md) 참고 — 시작 순서, 제어판, push 알림, 도움말 조회, 문제 해결. 드문 환경 이슈는 [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
@@ -183,7 +185,7 @@ Claude 대신 ChatGPT 데스크톱 앱에서도 같은 Stata 에 연결할 수 �
 
 4. 새 대화에서 `Stata 버전 알려줘` 를 입력해 버전이 답으로 오면 연결 완료입니다.
 
-> 화면은 Mac 기준입니다. 3장의 `mcp_connect` 로 서버를 먼저 띄워 두어야 도구가 동작합니다. 포트를 바꿨다면(2장 참고) URL 의 `8080` 을 바꾼 포트로 입력하세요. 4-2장의 스킬 묶음은 Claude 용입니다.
+> 화면은 Mac 기준입니다. 3장의 `mcp_setup` 으로 서버를 먼저 띄워 두어야 도구가 동작합니다. 포트를 바꿨다면(2장 참고) URL 의 `8080` 을 바꾼 포트로 입력하세요. 4-2장의 스킬 묶음은 Claude 용입니다.
 
 ---
 

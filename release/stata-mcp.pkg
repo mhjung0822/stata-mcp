@@ -2,8 +2,8 @@ d 'STATA-MCP': Stata MCP — drone and ado command suite
 d
 d Stata side of the Stata MCP project: the drone (runs inside Stata's
 d JVM) and the ado commands. The MCP server is a separate executable
-d (stata-mcp-server) that is not part of this package — run mcp_setup
-d after install to fetch it.
+d (stata-mcp-server) that is not part of this package — after net install,
+d run mcp_setup, install to fetch it and connect.
 d
 d Author: mhjung0822
 d Support: https://github.com/mhjung0822/stata-mcp

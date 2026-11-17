@@ -11,9 +11,8 @@
 ### 1-1. 시작 순서
 
 ```
-1. Stata 실행 → mcp_connect (서버 + 드론 한 번에)
+1. Stata 실행 → mcp_setup (서버 + 드론 한 번에)
 2. Claude Desktop 실행
-3. 코워크 모드 토글 ON
 ```
 
 Stata 와 Claude 는 어느 쪽을 먼저 켜도 됩니다. 이후 채팅에서 Stata 작업을 요청하거나, Stata 에서 `llm push` 로 결과를 Claude 로 보냅니다.
@@ -21,7 +20,7 @@ Stata 와 Claude 는 어느 쪽을 먼저 켜도 됩니다. 이후 채팅에서 
 ### 1-2. 완전 종료 (서버 + 드론)
 
 ```stata
-mcp_connect, shutdown
+mcp_setup, shutdown
 ```
 
 이 Stata 의 연결을 끊습니다 (제어판 [Shutdown] 버튼과 동일). 연결된 Stata 도, 열려 있는 Claude 도 없으면 서버가 꺼집니다.
@@ -48,7 +47,7 @@ mcp_watchdog, enabled(0)
 
 ### 2-1. Stata 쪽
 
-`mcp_connect` 가 오류 없이 끝나면 연결된 것입니다. 확인하려면 제어판(`mcp`)의 **Server status** 버튼을 누르거나 아래 명령을 치면 서버와 드론 상태가 나옵니다.
+`mcp_setup` 이 오류 없이 끝나면 연결된 것입니다. 확인하려면 제어판(`mcp`)의 **Server status** 버튼을 누르거나 아래 명령을 치면 서버와 드론 상태가 나옵니다.
 
 ```stata
 mcp_server, status
@@ -70,7 +69,7 @@ Stata 19.5 MP (8 core) · macOS · 작업폴더 /Users/…
 
 ### 2-4. 작업폴더
 
-`/stata-setup` 은 Stata 작업폴더가 코워크 폴더와 다르면 바꿀지 묻습니다. 그 뒤에도 Stata 에서 `cd` 로 작업폴더를 옮기면 Claude 가 자동으로 알아차려, 되돌릴지 새 폴더를 유지할지 안내합니다. 작업 지침(CLAUDE.md 등)에 처리 방식을 적어두면 매번 자동 응대합니다.
+`/stata-setup` 은 Stata 작업폴더가 Claude Desktop 작업 폴더와 다르면 바꿀지 묻습니다. 그 뒤에도 Stata 에서 `cd` 로 작업폴더를 옮기면 Claude 가 자동으로 알아차려, 되돌릴지 새 폴더를 유지할지 안내합니다. 작업 지침(CLAUDE.md 등)에 처리 방식을 적어두면 매번 자동 응대합니다.
 
 > 연결이 안 되면 9장 문제 해결을 보세요.
 
@@ -89,7 +88,7 @@ auto 데이터셋 불러와서 price를 mpg와 weight로 회귀해줘
 Claude가 다음 흐름으로 동작:
 1. `executeStata` tool 호출 → `sysuse auto, clear` / `regress price mpg weight` 등 실행
 2. Stata 결과(output, r()/e(), 그래프) 받아 채팅에 표시
-3. 그래프 명령이면 응답에 `graphDrawn: true` 포함 — 이미지가 필요할 때 Claude 가 `exportGraph` 호출 → `c(pwd)/g_yyyyMMddHHmm_xxxx.png` 생성, `graphPath`(절대경로)·`graphFilename` 응답 (cowork 패널이 작업폴더 모니터링 시 자동 표시)
+3. 그래프 명령이면 응답에 `graphDrawn: true` 포함 — 이미지가 필요할 때 Claude 가 `exportGraph` 호출 → `c(pwd)/g_yyyyMMddHHmm_xxxx.png` 생성, `graphPath`(절대경로)·`graphFilename` 응답 (Claude Desktop 패널이 작업폴더 모니터링 시 자동 표시)
 4. 후속 질문/지시 가능 (예: "잔차 그래프도 그려줘")
 
 응답에는 `rc` (Stata 반환코드, 0=성공) 가 포함되어 Claude 가 성공/실패를 즉시 판별하고, 문법 오류 시 `getHelp` 로 스스로 확인 후 재시도합니다.
@@ -151,7 +150,7 @@ Claude 가 Stata 명령을 헷갈릴 때 스스로 확인하는 도구들 — �
 - `/stata-push` — push 앱(베타) 열기. `/stata-push on` = 열고 이 대화에서 자동으로 받기, `/stata-push off` = 자동 받기 끄기 (7-3)
 - `/stata-workflow [절차]` — 워크플로(베타) 시작. 패널 분석·패널 데이터 생성을 단계별 질문으로 진행해 보고서까지 (6장)
 
-출력형식·분석 규칙 같은 선호는 작업 폴더의 CLAUDE.md(코워크·Claude Code)나 프로젝트 지침(채팅)에 적어 두면 Claude 가 그대로 따릅니다. 지침 예시 스킬 [`stata-instruction.zip`](https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/claude-plugins/stata-instruction.zip) 을 내려받아 고친 뒤 스킬로 올리면(채팅·코워크: 스킬 업로드 / Claude Code: `~/.claude/skills/stata-instruction/`) `/stata-setup` 이 그것을 읽습니다. 패널 병합은 "웨이브 합쳐줘" 같은 자연어로.
+출력형식·분석 규칙 같은 선호는 작업 폴더의 CLAUDE.md(Claude Desktop·Claude Code)나 프로젝트 지침(채팅)에 적어 두면 Claude 가 그대로 따릅니다. 지침 예시 스킬 [`stata-instruction.zip`](https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/claude-plugins/stata-instruction.zip) 을 내려받아 고친 뒤 스킬로 올리면(채팅·Claude Desktop: 스킬 업로드 / Claude Code: `~/.claude/skills/stata-instruction/`) `/stata-setup` 이 그것을 읽습니다. 패널 병합은 "웨이브 합쳐줘" 같은 자연어로.
 
 **자연어 vs 스킬 — 같은 작업, 두 방식**
 
@@ -179,7 +178,7 @@ Stata 창으로 오가며 변수명을 확인할 필요 없이, Claude 옆에 �
 
 - `/stata-setup` 을 실행하면 "변수 창을 열까요?" 라고 묻습니다 → 네
 - 나중에 열려면 `/stata-vars`, 또는 "변수 창 열어 줘"
-- 주소 직접 입력: `http://127.0.0.1:8080/vars` (코워크 브라우저 패널·일반 브라우저 어디서나. 같은 PC 에서만 열립니다)
+- 주소 직접 입력: `http://127.0.0.1:8080/vars` (Claude Desktop 브라우저 패널·일반 브라우저 어디서나. 같은 PC 에서만 열립니다)
 
 **창에서 할 수 있는 것**
 
@@ -212,7 +211,7 @@ Claude 를 통해 실행한 명령(변수 생성·삭제·이름 변경·라벨 
 
 - `/stata-workflow` — 어떤 절차를 할지부터 묻습니다. `/stata-workflow 패널 분석` 처럼 절차를 같이 적어도 됩니다
 - "워크플로로 돌려줘", "lnwage 를 age tenure 로 워크플로 FE 분석" 처럼 말해도 됩니다
-- 브라우저 패널이 있는 환경(Claude Code · 코워크)이면 오른쪽 패널에 워크플로 화면이 열리고, 일반 채팅에서는 같은 질문이 채팅으로 옵니다
+- 브라우저 패널이 있는 환경(Claude Code · Claude Desktop)이면 오른쪽 패널에 워크플로 화면이 열리고, 일반 채팅에서는 같은 질문이 채팅으로 옵니다
 
 **화면**
 
@@ -280,7 +279,7 @@ push 결과를 목록으로 보고, 골라서 Claude 에게 보낼 수 있습니
 |---|---|---|
 | **꺼짐** (기본) | 목록에 쌓임 | "push 결과 가져와" / "push #3 정리해 줘" |
 | **켜짐** — Code 탭 | 대화로 저절로 들어오고 Claude 가 정리 | 없음 |
-| **켜짐** — 코워크·채팅 | 대화로 저절로 들어오고 Claude 가 정리. 대화를 몇 분 쉬면 멈췄다가, 다시 말을 걸 때 그동안 온 것을 받습니다 | 없음 |
+| **켜짐** — Claude Desktop·채팅 | 대화로 저절로 들어오고 Claude 가 정리. 대화를 몇 분 쉬면 멈췄다가, 다시 말을 걸 때 그동안 온 것을 받습니다 | 없음 |
 
 <img src="images/push-app-cowork.png" alt="Claude 데스크톱 — 가운데 대화에 push 앱에서 넘어온 「[push] 새 결과 #8」 과 Claude 의 정리, 오른쪽 브라우저 패널의 push 앱(받는 대화 1 · 바로 정리 · 목록)" width="900">
 
@@ -292,7 +291,7 @@ push 결과를 목록으로 보고, 골라서 Claude 에게 보낼 수 있습니
 - push 앱 화면의 **「자동 받기」** 스위치로도 켜고 끕니다. 화면에서 켠 뒤에는 받을 대화에서 "푸쉬앱 켜 줘" 를 한 번 해야 그 대화가 받기 시작합니다
 - 서버 트레이 아이콘 메뉴 **Open Push page** / **Open Variables page** 로도 브라우저에서 열 수 있습니다 (Claude 없이 보기만 할 때)
 
-> **코워크·채팅에서 자동으로 받을 때**는 "새 결과가 있다"는 신호가 외부 중계 서버를 거쳐 전달됩니다. 결과 내용은 중계를 지나지 않고 이 PC 에서 직접 가져옵니다. 중계를 쓰지 않으려면 설정 파일(8-4)에 `PUSH_RELAY=off` — 이 경우 코워크·채팅에서는 "push 결과 가져와" 로 받습니다.
+> **Claude Desktop·채팅에서 자동으로 받을 때**는 "새 결과가 있다"는 신호가 외부 중계 서버를 거쳐 전달됩니다. 결과 내용은 중계를 지나지 않고 이 PC 에서 직접 가져옵니다. 중계를 쓰지 않으려면 설정 파일(8-4)에 `PUSH_RELAY=off` — 이 경우 Claude Desktop·채팅에서는 "push 결과 가져와" 로 받습니다.
 
 **「Claude 에게」 상자**
 
@@ -327,11 +326,15 @@ mcp_setup
 ```
 
 - `mcp` (= `db mcp`) — 제어판 다이얼로그
-- `mcp_setup` — 서버 프로그램·도움말 DB 받기 + 설정 메뉴 (기동/제거 링크)
+- `mcp_setup` — 연결 (서버 + 드론). Stata 를 켤 때마다
+- `mcp_setup, install` — 처음 설치: 서버 프로그램·도움말 DB 받기 + 메뉴 등록 + 연결, 끝에 설정 메뉴(연결·끊기·갱신·제거 링크) 출력
+- `mcp_setup, reset` — 다시 연결 · `mcp_setup, shutdown` — 연결 끊기
 - `mcp_setup, update` — 최신 버전으로 재설치하고 서버 프로그램·도움말 DB 도 새 판이면 받음 (Stata 를 재시작한 뒤 연결하기 전에 실행, 설치 후 다시 재시작)
 - `mcp_setup, updatecheck(off)` — 연결 시 새 버전 확인·연결 횟수 집계 끄기 (`on` 으로 다시 켜기)
 
-> 메뉴바 등록(User ▸ Stata-MCP)은 `mcp_setup` 이 함께 처리합니다. 다음 실행에서
+> 예전 명령 `mcp_connect` 도 `mcp_setup` 과 똑같이 동작합니다.
+
+> 메뉴바 등록(User ▸ Stata-MCP)은 `mcp_setup, install` 이 함께 처리합니다. 다음 실행에서
 > 메뉴가 안 보이면 `mcp_menu, install` 을 실행하고 출력 안내를 따르세요.
 
 ### 8-2. 전체 제거
@@ -348,25 +351,25 @@ mcp_uninstall
 
 ### 8-4. 설정 파일
 
-홈 폴더의 `.stata_mcp/stata_mcp.properties` 에 한 줄씩 적습니다 (파일은 첫 기동 시 자동 생성). 바꾼 뒤에는 서버를 다시 켜야 반영됩니다 (`mcp_server, stop` 후 `mcp_connect`).
+홈 폴더의 `.stata_mcp/stata_mcp.properties` 에 한 줄씩 적습니다 (파일은 첫 기동 시 자동 생성). 바꾼 뒤에는 서버를 다시 켜야 반영됩니다 (`mcp_server, stop` 후 `mcp_setup`).
 
 | 설정 | 뜻 |
 |---|---|
 | `BRIDGE_PORT` / `DRONE_PORT` | 포트 (기본 8080 / 8001) |
 | `stata.mcp.watchdog.mode` | 서버가 스스로 꺼지는 기준 — `both`(기본) · `stata` · `client` (1-3) |
 | `DATA_TOOL=on` | Claude 가 데이터 값을 표 형태로 직접 읽는 도구(getData)를 켭니다. 기본은 꺼져 있습니다 |
-| `PUSH_RELAY=off` | 코워크·채팅에서 push 를 자동으로 받을 때 쓰는 외부 중계를 끕니다 (7-3) |
+| `PUSH_RELAY=off` | Claude Desktop·채팅에서 push 를 자동으로 받을 때 쓰는 외부 중계를 끕니다 (7-3) |
 
 ### 8-3. Stata 여러 개 쓰기 (고급)
 
-Stata 창을 여러 개 띄우고 각각 `mcp_connect` 하면 모두 연결됩니다. Claude 는 기본으로 Stata 창 하나를 씁니다. 창이 여러 개면 어느 창을 쓸지 Claude 가 물어봅니다.
+Stata 창을 여러 개 띄우고 각각 `mcp_setup` 하면 모두 연결됩니다. Claude 는 기본으로 Stata 창 하나를 씁니다. 창이 여러 개면 어느 창을 쓸지 Claude 가 물어봅니다.
 
 #### 터미널 Stata (Mac)
 
 터미널에서 Stata 를 띄워 연결할 수도 있습니다. 이름을 붙여 두면 "c1 에서 돌려줘" 처럼 고를 수 있습니다.
 
 ```bash
-stata-mp -q 'mcp_connect, name(c1)'
+stata-mp -q 'mcp_setup, name(c1)'
 ```
 
 #### Claude Code 에서 별도 Stata 띄우기 (Mac)
@@ -386,13 +389,13 @@ CONSOLE_TOOLS=on
 
 ### 9-1. 연결이 안 될 때
 
-- Stata 에서 `mcp_connect` 을 다시 실행 (드론 재연결)
+- Stata 에서 `mcp_setup` 을 다시 실행 (드론 재연결)
 - 서버가 꺼져 있으면 `mcp_server` 로 다시 기동
 - 제어판(`db mcp`)의 **Server status** 버튼으로 상태 확인
 
-### 9-2. mcp_connect 시 Java 버전 오류 (드론이 시작 안 됨)
+### 9-2. mcp_setup 시 Java 버전 오류 (드론이 시작 안 됨)
 
-증상: `mcp_connect` 가 아래처럼 안내하고 멈춤.
+증상: `mcp_setup` 이 아래처럼 안내하고 멈춤.
 
 ```
 [Stata-MCP] Stata 의 Java 가 11.0.x 입니다 — Java 17 이상이 필요합니다.
@@ -412,6 +415,6 @@ Stata 에 내장된 Java 가 구버전이어서 생기는 문제입니다. Stata
 update all
 ```
 
-업데이트 후 **Stata 재시작** → `mcp_connect` 재실행.
+업데이트 후 **Stata 재시작** → `mcp_setup` 재실행.
 
 > 업데이트가 어려운 환경(사이트 라이선스 등)이면 JDK 17 설치 후 Stata 에서 `java set home` 으로 지정 — `help java` 참고. 현재 Java 는 `java query` 로 확인.

@@ -90,7 +90,7 @@ program mcp_uninstall
 
     * ─── 실제 제거 ───────────────────────────────────────────────────────
     di as text "[Uninstall] Stopping server/drone..."
-    capture mcp_connect, shutdown
+    capture mcp_setup, shutdown
     sleep 2500
 
     _mcp_unreg_menu

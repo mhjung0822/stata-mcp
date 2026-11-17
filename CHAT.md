@@ -1,6 +1,6 @@
 # 채팅 화면에서 Stata MCP 쓰기
 
-Claude Desktop 의 **채팅** 화면은 플러그인을 쓰지 않습니다. 채팅에서도 Stata 도구와 슬래시 명령을 쓰려면 아래 두 가지를 따로 설치합니다. 코워크·Claude Code 만 쓴다면 필요 없습니다 — [README.md](README.md) 4장의 플러그인으로 충분합니다.
+Claude Desktop 의 **채팅** 화면은 플러그인을 쓰지 않습니다. 채팅에서도 Stata 도구와 슬래시 명령을 쓰려면 아래 두 가지를 따로 설치합니다. Claude Desktop·Claude Code 만 쓴다면 필요 없습니다 — [README.md](README.md) 4장의 플러그인으로 충분합니다.
 
 ## 1. 확장 프로그램 설치 (MCP 연결)
 
@@ -23,7 +23,7 @@ Claude Desktop 의 **채팅** 화면은 플러그인을 쓰지 않습니다. 채
 
 5. Claude Desktop 재시작
 
-> 화면은 Mac 기준입니다. 채팅 화면은 Stata 에서 `mcp_connect` 를 **먼저** 실행해 두어야 도구가 동작합니다. 업데이트는 새 `.mcpb` 파일로 같은 방법으로 다시 설치.
+> 화면은 Mac 기준입니다. 채팅 화면은 Stata 에서 `mcp_setup` 을 **먼저** 실행해 두어야 도구가 동작합니다. 업데이트는 새 `.mcpb` 파일로 같은 방법으로 다시 설치.
 
 ## 2. 스킬 등록 (슬래시 명령)
 

@@ -1,6 +1,6 @@
 # Using Stata MCP in the chat surface
 
-The **chat** surface of Claude Desktop does not use plugins. To use the Stata tools and slash commands there as well, install the two items below. If you only use cowork or Claude Code, skip this — the plugin in [README.en.md](README.en.md) section 4 is enough.
+The **chat** surface of Claude Desktop does not use plugins. To use the Stata tools and slash commands there as well, install the two items below. If you only use Claude Desktop or Claude Code, skip this — the plugin in [README.en.md](README.en.md) section 4 is enough.
 
 ## 1. Install the extension (MCP connection)
 
@@ -23,7 +23,7 @@ The **chat** surface of Claude Desktop does not use plugins. To use the Stata to
 
 5. Restart Claude Desktop
 
-> Screenshots are from the Korean UI on Mac; button positions are the same. In the chat screen, run `mcp_connect` in Stata **first** for the tools to work. To update, install the new `.mcpb` file the same way.
+> Screenshots are from the Korean UI on Mac; button positions are the same. In the chat screen, run `mcp_setup` in Stata **first** for the tools to work. To update, install the new `.mcpb` file the same way.
 
 ## 2. Register the skills (slash commands)
 

@@ -11,7 +11,7 @@
 
 ## ⚠️ 먼저 — 설정 대상은 당신이 아니다
 
-- 이 절차는 **Windows + Claude Desktop(채팅·코워크) 전용**입니다.
+- 이 절차는 **Windows + Claude Desktop 전용**입니다.
 - 당신(Claude Code)은 **설치 도구로 불려온 것**입니다. 사용자는 Claude Code 를 쓰지 않습니다.
 - **`claude mcp add` 를 실행하지 말 것.** 그건 당신 자신에게 등록하는 것이라 사용자에겐 아무 효과가 없습니다.
 - 등록 대상은 **언제나 Claude Desktop 의 `claude_desktop_config.json`** 입니다.
@@ -47,14 +47,13 @@ java -version  # 17+ 필요
 
 ```stata
 net install stata-mcp, from("https://raw.githubusercontent.com/mhjung0822/stata-mcp/main/release") replace
-mcp_setup
-mcp_connect
+mcp_setup, install
 ```
 
-- `mcp_setup` — 도움말 DB 다운로드 + 메뉴 등록
-- `mcp_connect` — 서버(:8080) + 드론 기동
+- `mcp_setup, install` — 서버 프로그램 · 도움말 DB 다운로드 + 메뉴 등록 + 서버(:8080) · 드론 기동
+- 그다음부터는 Stata 를 켤 때마다 `mcp_setup` 한 줄로 연결 (예전 명령 `mcp_connect` 도 동작)
 
-각 단계 결과를 사용자에게 확인하고 진행하세요. **`mcp_connect` 까지 끝나야 서버가 뜹니다.**
+각 단계 결과를 사용자에게 확인하고 진행하세요. **`mcp_setup, install` 까지 끝나야 서버가 뜹니다.**
 
 ## 3) config 등록 (핵심)
 
@@ -126,7 +125,7 @@ Get-ChildItem $env:USERPROFILE -Filter claude_desktop_config.json -Recurse -Forc
 ```
 curl http://127.0.0.1:8080/status
 ```
-- `{"bridge":"running"}` → 서버 정상. 아니면 Stata 에서 `mcp_connect` 재실행 요청.
+- `{"bridge":"running"}` → 서버 정상. 아니면 Stata 에서 `mcp_setup` 재실행 요청.
 - 재시작한 Claude Desktop 에서 **`StataMCP` 도구가 보이는지** 사용자에게 확인 요청.
 
 ## 6) 스킬 (선택)
@@ -139,8 +138,8 @@ curl http://127.0.0.1:8080/status
 
 ## 알려진 함정
 
-- **채팅의 MCP 연결은 이 config 방식이 유일**합니다. 확장 프로그램(.mcpb)은 코워크 전용이라 채팅에는 연결되지 않습니다 — **확장 설치로 채팅 MCP 를 살리려 시도하지 마세요.**
+- **채팅의 MCP 연결은 이 config 방식이 유일**합니다. 확장 프로그램(.mcpb)은 채팅 외 화면 전용이라 채팅에는 연결되지 않습니다 — **확장 설치로 채팅 MCP 를 살리려 시도하지 마세요.**
 - **서버는 Stata 가 켭니다.** `mcp-remote` 는 순수 클라이언트라 서버를 안 켭니다. Stata 가 안 떠 있으면 도구도 안 뜹니다 — 이건 config 문제가 아닙니다.
 - **낯선 경로가 로그에 보이면** 옛 커넥터 잔재일 수 있습니다. 활성 config 에 실제로 있는지부터 확인하세요 (백업 파일만 남아 유령 로그를 뿜은 사례 있음).
-- **드론 jar 갱신 후엔 Stata 완전 재시작** 필요 (classloader 캐시 — `mcp_connect, reset` 으론 반영 안 됨).
+- **드론 jar 갱신 후엔 Stata 완전 재시작** 필요 (classloader 캐시 — `mcp_setup, reset` 으론 반영 안 됨).
 - **도움말 DB 는 pkg 번들이 아닙니다** — `mcp_setup` 이 받습니다. 설치 후 반드시 실행.

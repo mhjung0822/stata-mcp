@@ -8,7 +8,7 @@
     각 버튼은 onpush(program ...) 으로 아래 PROGRAM 블록을 실행하고,
     PROGRAM 은 put 으로 명령을 조립한 뒤 stata directive 로 실행한다.
 
-    의존 ado:  mcp_connect, mcp_server, mcp_setup, mcp_uninstall, mcp_watchdog
+    의존 ado:  mcp_setup, mcp_server, mcp_uninstall, mcp_watchdog
 */
 
 VERSION 17.0
@@ -47,11 +47,11 @@ END
 
 /* 하단은 닫기만 — 연결/재시작/종료는 위 버튼이 담당 */
 CANCEL can1, label("Close")
-HELP   hlp1, view("help mcp_connect")
+HELP   hlp1, view("help mcp_setup")
 
 PROGRAM do_connect
 BEGIN
-  put "mcp_connect, bridgeport("
+  put "mcp_setup, bridgeport("
   put main.sp_bp
   put ") droneport("
   put main.sp_dp
@@ -61,7 +61,7 @@ END
 
 PROGRAM do_reset
 BEGIN
-  put "mcp_connect, reset bridgeport("
+  put "mcp_setup, reset bridgeport("
   put main.sp_bp
   put ") droneport("
   put main.sp_dp
@@ -71,7 +71,7 @@ END
 
 PROGRAM do_shutdown
 BEGIN
-  put "mcp_connect, shutdown"
+  put "mcp_setup, shutdown"
   stata
 END
 

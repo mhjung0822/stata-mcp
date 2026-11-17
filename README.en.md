@@ -33,13 +33,13 @@ net install stata-mcp, from("https://raw.githubusercontent.com/mhjung0822/stata-
 ```
 
 ```stata
-mcp_setup
+mcp_setup, install
 ```
 
 - `net install …` — installs the Stata commands (ado) and the connection module
-- `mcp_setup` — downloads the server program and the help DB (~32MB) (internet connection required, once)
+- `mcp_setup, install` — downloads the server program and the help DB (~32MB), then connects (internet connection required, first time only)
 
-To update later, **start Stata fresh and run this before connecting with `mcp_connect`**:
+To update later, **start Stata fresh and run this before connecting**:
 
 ```stata
 mcp_setup, update
@@ -47,7 +47,7 @@ mcp_setup, update
 
 - `mcp_setup, update` — reinstalls the latest version and also fetches the server program and help DB when they have changed. If it gives an error, run the two install lines above again
 
-> To apply an update, **restart Stata again** and connect with `mcp_connect`.
+> To apply an update, **restart Stata again** and connect with `mcp_setup`.
 
 > The Claude extension (`.mcpb`) is updated separately. When a new version is out, download the file again from section 4-1 and install it the same way.
 
@@ -60,26 +60,28 @@ mcp_setup, update
 ## 3. Start the server
 
 ```stata
-mcp_connect
+mcp_setup
 ```
 
-Connects this Stata to Claude. You can start Stata and Claude in either order.
+Connects this Stata to Claude. Run this one line each time you start Stata (on first install, `mcp_setup, install` already connects). You can start Stata and Claude in either order.
+
+> The old command `mcp_connect` still works.
 
 > The server shuts down automatically once both Stata and Claude are closed. You can also start it from the GUI control panel (`db mcp`) — see [USAGE.en.md](USAGE.en.md).
 
 > On connect, Stata MCP checks once for a new version and shows a notice in the Results window if there is one (restart Stata, then run `mcp_setup, update` before connecting). Only the number of connections is counted, anonymously. To turn this off: `mcp_setup, updatecheck(off)`. Versions that are no longer supported won't connect and show a notice instead.
 
-> ⚠️ **If `mcp_connect` says Java 17 or later is required, or a red `java.lang.UnsupportedClassVersionError` appears and the drone won't start** — Stata's bundled Java is outdated. Run `update all` in Stata, **restart Stata**, then run `mcp_connect` again. Details in the troubleshooting section of [USAGE.en.md](USAGE.en.md).
+> ⚠️ **If `mcp_setup` says Java 17 or later is required, or a red `java.lang.UnsupportedClassVersionError` appears and the drone won't start** — Stata's bundled Java is outdated. Run `update all` in Stata, **restart Stata**, then run `mcp_setup` again. Details in the troubleshooting section of [USAGE.en.md](USAGE.en.md).
 
 ---
 
-## 4. Register in Claude (cowork · Claude Code)
+## 4. Register in Claude (Claude Desktop · Claude Code)
 
-> For environment issues such as cowork not activating on Windows, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md) (Korean).
+> For environment issues such as Claude Desktop not activating on Windows, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md) (Korean).
 
 ### 4-1. Install the plugin (MCP connection + slash commands)
 
-One package for both Mac and Windows. It works in cowork and in the Claude Code tab. Pick one of the two methods.
+One package for both Mac and Windows. It works in Claude Desktop and in the Claude Code tab. Pick one of the two methods.
 
 **Method A — marketplace (register once, updates arrive by themselves)**
 
@@ -116,11 +118,11 @@ One package for both Mac and Windows. It works in cowork and in the Claude Code 
 
    <img src="images/claude-plugin-7.png" alt="Installed - Stata MCP plugin page" width="640">
 
-> Screenshots are from the Korean UI; button positions are the same. Run `mcp_connect` (step 3) in Stata for the tools to work. Updates: method A is automatic (or **Update** on the marketplace entry); for method B upload the new `.plugin` file the same way. See [USAGE.en.md](USAGE.en.md) for the slash commands. In the Claude Code tab they carry the `stata-mcp:` prefix (e.g. `/stata-mcp:stata-exec`). The plugin ships the Korean skill texts; the English skill pack is in [CHAT.en.md](CHAT.en.md).
+> Screenshots are from the Korean UI; button positions are the same. Run `mcp_setup` (step 3) in Stata for the tools to work. Updates: method A is automatic (or **Update** on the marketplace entry); for method B upload the new `.plugin` file the same way. See [USAGE.en.md](USAGE.en.md) for the slash commands. In the Claude Code tab they carry the `stata-mcp:` prefix (e.g. `/stata-mcp:stata-exec`). The plugin ships the Korean skill texts; the English skill pack is in [CHAT.en.md](CHAT.en.md).
 
 ### 4-2. Also use it in chat (optional)
 
-The chat surface uses the extension and the skill zip instead of the plugin — see [CHAT.en.md](CHAT.en.md). Skip this if you only use cowork or Claude Code.
+The chat surface uses the extension and the skill zip instead of the plugin — see [CHAT.en.md](CHAT.en.md). Skip this if you only use Claude Desktop or Claude Code.
 
 ---
 
@@ -131,13 +133,13 @@ leaves it running in the background, so quit via the tray icon → **Quit** on W
 or **⌘Q** on Mac. Then start them in this order:
 
 ```
-1. Start Stata → run mcp_connect
+1. Start Stata → run mcp_setup
 2. Start Claude Desktop
 ```
 
 Either order works.
 
-Then, in a cowork session (or the Claude Code tab), type either of these:
+Then, in a Claude Desktop conversation (or the Claude Code tab), type either of these:
 
 ```
 What Stata version am I running?
@@ -151,7 +153,7 @@ If the version and edition come back (e.g. StataNow/MP 19.5), the installation i
 
 If not, check in order:
 
-1. Stata Results window — does the `mcp_connect` output say `Ready for commands`? (if not, see step 3, Start the server)
+1. Stata Results window — does the `mcp_setup` output say `Ready for commands`? (if not, see step 3, Start the server)
 2. **Plugins** in the left sidebar — is **Stata MCP** switched on? (for chat: Settings → Extensions). If it is on but nothing works, fully quit and relaunch Claude Desktop
 
 For everyday usage see [USAGE.en.md](USAGE.en.md) — startup order, control panel, push notifications, help lookup, troubleshooting. Rare environment issues: [TROUBLESHOOTING.md](TROUBLESHOOTING.md) (Korean).
@@ -180,7 +182,7 @@ Instead of Claude, you can connect the ChatGPT desktop app to the same Stata. No
 
 4. In a new chat, type `What Stata version am I running?` — if the version comes back, you are connected.
 
-> Screenshots are from the Korean UI on Mac; button positions are the same. The server from step 3 (`mcp_connect`) must be running for the tools to work. If you changed the port (see section 2), use that port instead of `8080` in the URL. The skill pack in 4-2 is for Claude.
+> Screenshots are from the Korean UI on Mac; button positions are the same. The server from step 3 (`mcp_setup`) must be running for the tools to work. If you changed the port (see section 2), use that port instead of `8080` in the URL. The skill pack in 4-2 is for Claude.
 
 ---
 
